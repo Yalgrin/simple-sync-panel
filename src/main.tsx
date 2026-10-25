@@ -8,7 +8,6 @@ import {HomePage} from "./pages/HomePage.tsx";
 import {GamesPage} from "./pages/GamesPage.tsx";
 import {LibraryPage} from "./pages/LibraryPage.tsx";
 import '@fontsource/roboto/500.css';
-import {DialogProvider} from "./components/DialogProvider.tsx";
 import {GameDetailsPane} from "./components/games/GameDetailsPane.tsx";
 import {GameEditPane} from "./components/games/GameEditPane.tsx";
 
@@ -57,9 +56,7 @@ const queryClient = new QueryClient()
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <DialogProvider>
-                <RouterProvider router={router}/>
-            </DialogProvider>
+            <RouterProvider router={router}/>
         </QueryClientProvider>
     </StrictMode>,
 )

@@ -1,6 +1,6 @@
 import {Box, Button, Card, CardContent, CircularProgress, Divider, Stack, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router";
-import {useQueryGameDetails} from "../../hooks/objects.ts";
+import {useMarkGameAsFavorite, useQueryGameDetails} from "../../hooks/objects.ts";
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
@@ -9,6 +9,11 @@ import ResizableFrame from "../ResizableFrame.tsx";
 import * as React from "react";
 import IconImage from "../common/IconImage.tsx";
 import ImageWithSpinner from "../common/ImageWithSpinner.tsx";
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import {useDialog} from "../../hooks/useDialog.ts";
+import {DeleteGameDialog} from "../dialogs/DeleteGameDialog.tsx";
+import type {PanelGameDTO} from "../../models/objects.ts";
 
 interface StatCardProps {
     visible: boolean;
@@ -64,6 +69,20 @@ function DetailsRow({label, value, nodeAtEnd}: Readonly<DetailsRowProps>) {
     </>)
 }
 
+function MarkAsFavoriteButton({gameDetails}: Readonly<
+    { gameDetails: PanelGameDTO }
+>) {
+    const favoriteMutation = useMarkGameAsFavorite(gameDetails, !gameDetails.isFavorite);
+
+    return (
+        <Button color="warning" variant="contained" onClick={
+                                                        () => favoriteMutation.mutate()
+                                                    } disabled={favoriteMutation.isPending}>
+            {gameDetails.isFavorite ? <StarRoundedIcon/> : <StarBorderRoundedIcon/>}
+        </Button>
+    )
+}
+
 export function GameDetailsPane() {
     const {id} = useParams();
     const navigate = useNavigate();
@@ -72,6 +91,20 @@ export function GameDetailsPane() {
 
     const {data: gameDetails, isLoading, error} = useQueryGameDetails(gameId);
     const isCurrentGame = gameDetails?.id === gameId;
+
+    const {openDialog} = useDialog();
+
+    const handleDelete = () => {
+        openDialog({
+            title: "Delete game",
+            render: ({close}) => {
+                if (gameDetails == null) {
+                    return null;
+                }
+                return <DeleteGameDialog close={close} game={gameDetails}/>;
+            },
+        });
+    };
 
     if (isLoading || (gameId !== undefined && !error && !isCurrentGame)) {
         return (
@@ -182,7 +215,9 @@ export function GameDetailsPane() {
                                 Edit
                             </Button>
 
-                            <Button color="error" variant="contained">
+                            <MarkAsFavoriteButton gameDetails={gameDetails}/>
+
+                            <Button color="error" variant="contained" onClick={handleDelete}>
                                 <DeleteRoundedIcon/>
                             </Button>
                         </Stack>
@@ -252,6 +287,7 @@ export function GameDetailsPane() {
                                     rel="noopener noreferrer"
                                     variant="outlined"
                                     type="button"
+                                    color="info"
                                     size="small"
                                     endIcon={<OpenInNewRoundedIcon fontSize="small"/>}
                                     sx={{maxWidth: '100%', textTransform: 'none', overflowWrap: 'anywhere'}}

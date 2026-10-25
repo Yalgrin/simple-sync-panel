@@ -4,12 +4,13 @@ import {Navigate, Outlet, useLocation, useMatch} from "react-router";
 import {MainLayout} from "./components/layout/MainLayout.tsx";
 import {useCurrentUser} from "./hooks/auth.ts";
 import {useSseSession} from "./hooks/useSseSession.tsx";
+import {DialogProvider} from "./components/DialogProvider.tsx";
 
 //TODO
 const theme = createTheme({
     palette: {
         mode: 'dark',
-        primary: {main: '#b39ddb'},
+        primary: {main: '#1565c0'},
     }
 });
 
@@ -52,7 +53,9 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline enableColorScheme/>
-            {mainLayout}
+            <DialogProvider>
+                {mainLayout}
+            </DialogProvider>
         </ThemeProvider>
     )
 }

@@ -33,9 +33,8 @@ export function SideBar() {
                             <Tooltip title={label} placement="right">
                                 <IconButton
                                     sx={{
-                                        //TODO colors
-                                        color: isActive ? 'primary.main' : 'grey.500',
-                                        bgcolor: isActive ? 'secondary.main' : 'transparent',
+                                        color: isActive ? 'text.primary' : 'text.secondary',
+                                        bgcolor: isActive ? 'primary.main' : 'transparent',
                                         borderRadius: 2,
                                     }}
                                 >

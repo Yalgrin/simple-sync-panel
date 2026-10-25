@@ -1,4 +1,4 @@
-import {keepPreviousData, useQuery, useQueryClient} from "@tanstack/react-query";
+import {keepPreviousData, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     AGE_RATING_QUERY_KEY,
     CATEGORY_QUERY_KEY,
@@ -7,9 +7,11 @@ import {
     FEATURE_QUERY_KEY,
     FILTER_PRESET_QUERY_KEY,
     GAME_DETAILS_QUERY_KEY,
+    GAME_GLOBAL_QUERY_KEY,
     GAME_LIST_QUERY_KEY,
     GENRE_QUERY_KEY,
     LIBRARY_PLUGIN_QUERY_KEY,
+    type PanelGameDTO,
     PLATFORM_QUERY_KEY,
     REGION_QUERY_KEY,
     RELEASE_YEAR_QUERY_KEY,
@@ -18,6 +20,7 @@ import {
     TAG_QUERY_KEY
 } from "../models/objects.ts";
 import {
+    deleteGame,
     fetchAgeRatings,
     fetchCategories,
     fetchCompanies,
@@ -33,7 +36,8 @@ import {
     fetchRegions,
     fetchSeries,
     fetchSources,
-    fetchTags
+    fetchTags,
+    markGameAsFavorite
 } from "../functions/objects.ts";
 import type {GameListFilterDTO} from "../models/gameList.ts";
 
@@ -164,5 +168,25 @@ export function useQueryGameDetails(id: number | undefined | null) {
         queryKey: [...GAME_DETAILS_QUERY_KEY, id],
         enabled: !!id,
         queryFn: () => fetchGameDetails(queryClient, id as number)
+    })
+}
+
+export function useMarkGameAsFavorite(game: PanelGameDTO, favorite: boolean) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: () => markGameAsFavorite(queryClient, game, favorite),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: GAME_GLOBAL_QUERY_KEY});
+        },
+    })
+}
+
+export function useDeleteGame(game: PanelGameDTO) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: () => deleteGame(queryClient, game),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: GAME_GLOBAL_QUERY_KEY});
+        },
     })
 }

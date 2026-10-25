@@ -109,3 +109,15 @@ export async function fetchGames(queryClient: QueryClient, filter: GameListFilte
 export async function fetchGameDetails(queryClient: QueryClient, id: number): Promise<PanelGameDTO> {
     return (await performGetRequest(queryClient, `/api/panel/game/${id}`)).json();
 }
+
+export async function markGameAsFavorite(queryClient: QueryClient, game: PanelGameDTO, favorite: boolean): Promise<PanelGameDTO> {
+    return (await performPostJsonRequest(queryClient, "/api/panel/game/mark-as-favorite?favorite=" + favorite, {
+        body: JSON.stringify({id: game.id, favorite})
+    })).json();
+}
+
+export async function deleteGame(queryClient: QueryClient, game: PanelGameDTO): Promise<void> {
+    (await performPostJsonRequest(queryClient, "/api/panel/game/delete", {
+        body: JSON.stringify(game)
+    }));
+}
