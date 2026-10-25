@@ -3,6 +3,7 @@ import type {SessionState} from "../models/session.ts";
 
 export const useSessionState = create<SessionState>((set) => ({
     sessionId: undefined,
+    serverVersion: undefined,
     active: false,
     loading: false,
     error: false,
@@ -19,6 +20,7 @@ export const useSessionState = create<SessionState>((set) => ({
             error: true
         }),
         setSessionId: (sessionId: string | undefined) => set({sessionId}),
+        setServerVersion: (serverVersion: string | undefined) => set({serverVersion}),
         setActive: (active: boolean) => set({active}),
         setLoading: (loading: boolean) => set({loading}),
         setError: (error: boolean) => set({error}),

@@ -10,6 +10,7 @@ import {LogoutDialog} from "../dialogs/LogoutDialog.tsx";
 import {ChangePasswordDialog} from "../dialogs/ChangePasswordDialog.tsx";
 import {FilterButton} from "../FilterButton.tsx";
 import {SessionStatusIcon} from "../SessionStatusIcon.tsx";
+import {version} from "../../../package.json";
 
 export const TOP_BAR_HEIGHT = 56;
 
@@ -70,6 +71,9 @@ export function TopBar() {
                         },
                     }}>
                         Simple Sync Panel
+                    </Typography>
+                    <Typography variant="caption" sx={{ml: 1, color: "text.secondary"}}>
+                        v{version}
                     </Typography>
                 </Stack>
             </Link>

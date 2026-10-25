@@ -138,10 +138,10 @@ function GameRow({
                             display: 'flex',
                             flexDirection: 'column',
                         }}>
-                            <Typography variant="caption">
+                            <Typography variant="caption" sx={{color: "text.secondary"}}>
                                 {game.plugin?.name ?? ""} | {game.completionStatus?.name ?? ""}
                             </Typography>
-                            <Typography variant="caption">
+                            <Typography variant="caption" sx={{color: "text.secondary"}}>
                                 <AccessTimeIcon
                                     sx={{fontSize: 12}}/> {formatLocalDate(game.lastActivity)} | {formatPlaytime(game.playtime)}
                             </Typography>

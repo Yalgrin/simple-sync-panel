@@ -94,6 +94,7 @@ export function useSseSession(): SessionState {
                 if (change.messageType == MessageType.INITIALIZATION) {
                     const initMessage = change as InitializationMessage;
                     actions.setSessionId(initMessage.sessionId);
+                    actions.setServerVersion(initMessage.serverVersion);
                 } else if (change.messageType == MessageType.CHANGE) {
                     const changeMessage = change as ChangeMessage;
 

@@ -16,17 +16,21 @@ export function SessionStatusIcon() {
 
     const getConnectedMessage = function () {
         let result: string
+        result = "Server connection status\n"
         if (sessionState.connected) {
-            result = "Connected.";
+            result += "Connected.";
         } else if (sessionState.loading) {
-            result = "Connecting...";
+            result += "Connecting...";
         } else if (sessionState.error) {
-            result = "Connection error!";
+            result += "Connection error!";
         } else {
-            result = "Disconnected."
+            result += "Disconnected."
         }
         if (sessionState.sessionId) {
             result += "\nSession ID: " + sessionState.sessionId;
+        }
+        if (sessionState.serverVersion) {
+            result += "\nServer version: " + sessionState.serverVersion;
         }
         return result;
     }

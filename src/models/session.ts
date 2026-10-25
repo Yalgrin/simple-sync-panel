@@ -1,5 +1,6 @@
 export interface SessionState {
     sessionId: string | undefined;
+    serverVersion: string | undefined;
     active: boolean;
     loading: boolean;
     error: boolean;
@@ -10,6 +11,7 @@ export interface SessionState {
         markAsConnected: () => void;
         markAsConnectionError: () => void;
         setSessionId: (sessionId: string | undefined) => void;
+        setServerVersion: (serverVersion: string | undefined) => void;
         setActive: (active: boolean) => void;
         setLoading: (loading: boolean) => void;
         setError: (error: boolean) => void;
@@ -54,6 +56,7 @@ export interface ConnectionMessage {
 
 export interface InitializationMessage extends ConnectionMessage {
     sessionId: string;
+    serverVersion: string | undefined;
 }
 
 export interface ChangeMessage extends ConnectionMessage {
