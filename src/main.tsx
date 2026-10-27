@@ -9,9 +9,14 @@ import {GamesPage} from "./pages/GamesPage.tsx";
 import {LibraryPage} from "./pages/LibraryPage.tsx";
 import '@fontsource/roboto/500.css';
 import {GameDetailsPane} from "./components/games/GameDetailsPane.tsx";
-import {GameEditPane} from "./components/games/GameEditPane.tsx";
+import {GameAddEditPane} from "./components/games/GameAddEditPane.tsx";
+import {LocalizationProvider} from '@mui/x-date-pickers';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {localeConfig} from "./localeInitialization.ts"
 
-
+//TODO localization
+//TODO error handling, 404 etc
+//TODO better error and loading handling in each view
 const router = createBrowserRouter([
     {
         path: "/",
@@ -39,7 +44,11 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "edit/:id",
-                        Component: GameEditPane
+                        Component: GameAddEditPane
+                    },
+                    {
+                        path: "add",
+                        Component: GameAddEditPane
                     }
                 ]
             },
@@ -56,7 +65,10 @@ const queryClient = new QueryClient()
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router}/>
+            <LocalizationProvider dateAdapter={AdapterDayjs}
+                                  adapterLocale={localeConfig.dayjs}>
+                <RouterProvider router={router}/>
+            </LocalizationProvider>
         </QueryClientProvider>
     </StrictMode>,
 )

@@ -7,11 +7,11 @@ import {
     FEATURE_QUERY_KEY,
     FILTER_PRESET_QUERY_KEY,
     GAME_DETAILS_QUERY_KEY,
-    GAME_GLOBAL_QUERY_KEY,
     GAME_LIST_QUERY_KEY,
     GENRE_QUERY_KEY,
     LIBRARY_PLUGIN_QUERY_KEY,
     type PanelGameDTO,
+    type PanelGameToSaveDTO,
     PLATFORM_QUERY_KEY,
     REGION_QUERY_KEY,
     RELEASE_YEAR_QUERY_KEY,
@@ -37,7 +37,8 @@ import {
     fetchSeries,
     fetchSources,
     fetchTags,
-    markGameAsFavorite
+    markGameAsFavorite,
+    saveGame
 } from "../functions/objects.ts";
 import type {GameListFilterDTO} from "../models/gameList.ts";
 
@@ -171,12 +172,22 @@ export function useQueryGameDetails(id: number | undefined | null) {
     })
 }
 
+export function useSaveGame() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (game: PanelGameToSaveDTO) => saveGame(queryClient, game),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: GAME_DETAILS_QUERY_KEY});
+        },
+    })
+}
+
 export function useMarkGameAsFavorite(game: PanelGameDTO, favorite: boolean) {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: () => markGameAsFavorite(queryClient, game, favorite),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: GAME_GLOBAL_QUERY_KEY});
+            await queryClient.invalidateQueries({queryKey: [...GAME_DETAILS_QUERY_KEY, game.id]});
         },
     })
 }
@@ -186,7 +197,7 @@ export function useDeleteGame(game: PanelGameDTO) {
     return useMutation({
         mutationFn: () => deleteGame(queryClient, game),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: GAME_GLOBAL_QUERY_KEY});
+            await queryClient.invalidateQueries({queryKey: GAME_DETAILS_QUERY_KEY});
         },
     })
 }

@@ -1,5 +1,5 @@
 import type {QueryClient} from "@tanstack/react-query";
-import {performGetRequest, performPostJsonRequest} from "./queries.ts";
+import {performGetRequest, performPostJsonRequest, performPostRequest} from "./queries.ts";
 import type {
     PanelAgeRatingDTO,
     PanelCategoryDTO,
@@ -8,6 +8,7 @@ import type {
     PanelFeatureDTO,
     PanelFilterPresetDTO,
     PanelGameDTO,
+    PanelGameToSaveDTO,
     PanelGenreDTO,
     PanelLibraryPluginDTO,
     PanelPlatformDTO,
@@ -108,6 +109,36 @@ export async function fetchGames(queryClient: QueryClient, filter: GameListFilte
 
 export async function fetchGameDetails(queryClient: QueryClient, id: number): Promise<PanelGameDTO> {
     return (await performGetRequest(queryClient, `/api/panel/game/${id}`)).json();
+}
+
+function renameFile(file: File, newBaseName: string): File {
+    const lastDot = file.name.lastIndexOf(".");
+    const extension = lastDot > 0 ? file.name.slice(lastDot) : "";
+
+    return new File([file], `${newBaseName}${extension}`, {
+        type: file.type,
+        lastModified: file.lastModified,
+    });
+}
+
+export async function saveGame(queryClient: QueryClient, game: PanelGameToSaveDTO): Promise<PanelGameDTO> {
+    const requestInit: RequestInit = {};
+    const formData = new FormData()
+    formData.append(
+        "dto",
+        new Blob([JSON.stringify(game.game)], {type: "application/json"})
+    );
+    if (game.game.isSavingIcon && game.icon) {
+        formData.append("files", renameFile(game.icon, "Icon"));
+    }
+    if (game.game.isSavingBackgroundImage && game.backgroundImage) {
+        formData.append("files", renameFile(game.backgroundImage, "BackgroundImage"));
+    }
+    if (game.game.isSavingCoverImage && game.coverImage) {
+        formData.append("files", renameFile(game.coverImage, "CoverImage"));
+    }
+    requestInit.body = formData;
+    return (await performPostRequest(queryClient, "/api/panel/game/save", requestInit)).json();
 }
 
 export async function markGameAsFavorite(queryClient: QueryClient, game: PanelGameDTO, favorite: boolean): Promise<PanelGameDTO> {

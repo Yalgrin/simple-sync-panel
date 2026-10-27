@@ -1,6 +1,7 @@
 import {
     Box,
     Divider,
+    IconButton,
     InputBase,
     LinearProgress,
     ListItemButton,
@@ -16,7 +17,7 @@ import {List, type RowComponentProps} from "react-window";
 import {type ReactNode, useCallback, useEffect, useMemo} from "react";
 import type {GameListDTO} from "../../models/gameList.ts";
 import {useGameListStore} from "../../store/useGameListStore.ts";
-import {useNavigate} from "react-router";
+import {useLocation, useNavigate} from "react-router";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -214,6 +215,7 @@ function GameList() {
     const gameListStoreAction = useGameListStore((state) => state.actions);
 
     const navigate = useNavigate();
+    const {pathname} = useLocation();
 
     const [debouncedFilter] = useDebouncedValue(filterStore, {
         wait: 300
@@ -260,6 +262,8 @@ function GameList() {
                 row.type === 'game' && row.game != null
         );
 
+        if (/^\/games?\/(?:add|edit\/[^/]+)\/?$/.test(pathname)) return;
+
         if (
             visibleGames.length > 0 &&
             (!selectedGameId || !visibleGames.some((row) => row.game.id === selectedGameId))
@@ -268,7 +272,7 @@ function GameList() {
         } else if (selectedGameId) {
             handleSelectGame(selectedGameId);
         }
-    }, [isLoading, isPlaceholderData, error, gameList, rows, selectedGameId, handleSelectGame]);
+    }, [isLoading, isPlaceholderData, error, gameList, rows, selectedGameId, handleSelectGame, pathname]);
 
 
     const handleToggleGroup = useCallback((name: string | undefined | null) => {
@@ -309,6 +313,23 @@ function GameList() {
                 />)
             }</>
     );
+}
+
+function AddGameButton() {
+    const navigate = useNavigate();
+    return (
+        <IconButton sx={{
+            position: "absolute",
+            right: "12px",
+            top: "12px",
+            fontSize: '32px'
+        }}
+                    onClick={() =>
+                        navigate(`/games/add`)}
+        >
+            <AddRoundedIcon/>
+        </IconButton>
+    )
 }
 
 export function GameListPane() {
@@ -356,12 +377,7 @@ export function GameListPane() {
             <Box sx={{marginTop: "8px", flex: 1, minHeight: 0}}>
                 <GameList/>
             </Box>
-            <AddRoundedIcon sx={{
-                position: "absolute",
-                right: "12px",
-                top: "12px",
-                fontSize: '32px'
-            }}/>
+            <AddGameButton/>
         </Box>
     )
 }

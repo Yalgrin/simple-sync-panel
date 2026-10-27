@@ -352,8 +352,6 @@ export function GameDetailsPane() {
 
                     <Card
                         sx={{
-                            // bgcolor: 'rgba(255,255,255,0.04)',
-                            // border: '1px solid rgba(255,255,255,0.08)',
                             flex: 4
                         }}
                     >
@@ -363,7 +361,7 @@ export function GameDetailsPane() {
                             </Typography>
                             <Typography variant="body2" sx={{color: 'grey.300', lineHeight: 1.7}}>
                                 <ResizableFrame
-                                    html={gameDetails?.description}
+                                    html={gameDetails?.description ?? ""}
                                 />
                             </Typography>
                         </CardContent>

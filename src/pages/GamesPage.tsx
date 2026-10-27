@@ -4,7 +4,7 @@ import {Outlet} from "react-router";
 import {FiltersPane} from "../components/filters/FiltersPane.tsx";
 import {useFilterStore} from "../store/useFilterStore.ts";
 
-const GAME_LIST_WIDTH = 320;
+const GAME_LIST_WIDTH = 340;
 const FILTERS_WIDTH = 320;
 
 function FilterPart() {
@@ -18,8 +18,7 @@ function FilterPart() {
                 borderLeft: '1px solid',
                 height: "100%",
                 overflowY: 'auto',
-                // borderColor: 'rgba(255,255,255,0.08)',
-                // bgcolor: '#11151b',
+                borderColor: 'rgba(255,255,255,0.08)'
             }}
         >
             <FiltersPane/>
@@ -38,8 +37,7 @@ export function GamesPage() {
                     height: "100%",
                     minHeight: 0,
                     overflow: 'hidden',
-                    // borderColor: 'rgba(255,255,255,0.08)',
-                    // bgcolor: '#11151b',
+                    borderColor: 'rgba(255,255,255,0.08)'
                 }}
             >
                 <GameListPane/>

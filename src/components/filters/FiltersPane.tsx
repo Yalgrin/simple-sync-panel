@@ -235,6 +235,8 @@ interface ObjectAutocompleteProps {
     setFilter: (filter: IdItemPropertiesDTO | null) => void;
 }
 
+
+//TODO add virtualization
 function ObjectAutocomplete({options, disabled, filter, setFilter}: Readonly<ObjectAutocompleteProps>) {
     const optionsWithEmpty = options ? [{playniteId: "", name: '(None)'}, ...options] : [];
     const optionIds = new Set(optionsWithEmpty.map((o) => o.playniteId));

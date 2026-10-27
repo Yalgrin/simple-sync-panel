@@ -20,6 +20,7 @@ export function SideBar() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 py: 1,
+                borderRight: '1px solid rgba(255,255,255,0.08)'
             }}
         >
             <Stack spacing={1} sx={{alignItems: "center"}}>

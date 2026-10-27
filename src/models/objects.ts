@@ -90,6 +90,13 @@ export interface LinkDTO {
     url: string;
 }
 
+export interface PanelGameToSaveDTO {
+    game: PanelGameDTO;
+    icon: File | null;
+    backgroundImage: File | null;
+    coverImage: File | null;
+}
+
 export interface PanelGameDTO extends PanelObjectDTO {
     gameId?: string | null;
     plugin?: PanelLibraryPluginDTO | null;

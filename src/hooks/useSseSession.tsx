@@ -87,41 +87,45 @@ export function useSseSession(): SessionState {
         };
 
         eventSource.onmessage = async (event) => {
-            const changes: ConnectionMessage[] = JSON.parse(event.data);
+            try {
+                const changes: ConnectionMessage[] = JSON.parse(event.data);
 
-            const changedTypeKeys: (readonly string[])[] = [];
-            for (const change of changes) {
-                if (change.messageType == MessageType.INITIALIZATION) {
-                    const initMessage = change as InitializationMessage;
-                    actions.setSessionId(initMessage.sessionId);
-                    actions.setServerVersion(initMessage.serverVersion);
-                } else if (change.messageType == MessageType.CHANGE) {
-                    const changeMessage = change as ChangeMessage;
+                const changedTypeKeys: (readonly string[])[] = [];
+                for (const change of changes) {
+                    if (change.messageType == MessageType.INITIALIZATION) {
+                        const initMessage = change as InitializationMessage;
+                        actions.setSessionId(initMessage.sessionId);
+                        actions.setServerVersion(initMessage.serverVersion);
+                    } else if (change.messageType == MessageType.CHANGE) {
+                        const changeMessage = change as ChangeMessage;
 
-                    const key = getQueryKeyToClear(changeMessage.type);
-                    if (!key || key.length === 0) {
-                        continue;
-                    }
-
-                    if (!changedTypeKeys.includes(key)) {
-                        changedTypeKeys.push(key);
-                    }
-                }
-            }
-
-            if (changedTypeKeys && changedTypeKeys.length > 0) {
-                for (const key of changedTypeKeys) {
-                    await queryClient.invalidateQueries(
-                        {
-                            queryKey: key,
-                            refetchType: 'active'
-                        },
-                        {
-                            cancelRefetch: true,
-                            throwOnError: true
+                        const key = getQueryKeyToClear(changeMessage.type);
+                        if (!key || key.length === 0) {
+                            continue;
                         }
-                    );
+
+                        if (!changedTypeKeys.includes(key)) {
+                            changedTypeKeys.push(key);
+                        }
+                    }
                 }
+
+                if (changedTypeKeys && changedTypeKeys.length > 0) {
+                    for (const key of changedTypeKeys) {
+                        await queryClient.invalidateQueries(
+                            {
+                                queryKey: key,
+                                refetchType: 'active'
+                            },
+                            {
+                                cancelRefetch: true,
+                                throwOnError: true
+                            }
+                        );
+                    }
+                }
+            } catch (e) {
+                console.error(e);
             }
         };
 
