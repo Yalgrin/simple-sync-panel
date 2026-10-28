@@ -15,6 +15,7 @@ import {
     useSaveGame
 } from "../../hooks/objects.ts";
 import type {
+    LinkDTO,
     PanelAgeRatingDTO,
     PanelCategoryDTO,
     PanelCompanyDTO,
@@ -38,12 +39,13 @@ import {
     IconButton,
     Paper,
     Popover,
+    Stack,
     Tab,
     Tabs,
     TextField,
     Typography
 } from "@mui/material";
-import {useMemo, useState} from "react";
+import {type ChangeEvent, type ReactNode, useEffect, useMemo, useState} from "react";
 import {DatePicker, DateTimePicker} from "@mui/x-date-pickers";
 import dayjs from 'dayjs';
 import {useGameListStore} from "../../store/useGameListStore.ts";
@@ -53,6 +55,8 @@ import {AddObjectDialog} from "../dialogs/AddObjectDialog.tsx";
 import NumberField from "../NumberField.tsx";
 import {formatPlaytime} from "../../functions/util.ts";
 import CloseIcon from "@mui/icons-material/Close";
+import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
+import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 
 //TODO extract components
 //TODO change blocker on change
@@ -220,6 +224,7 @@ function CheckboxField({name, value, setValue}: Readonly<{
             <Typography>{name}</Typography>
             <Checkbox
                 size="small"
+                sx={{justifySelf: "start"}}
                 checked={value ?? false}
                 onChange={(event) => setValue(event.target.checked)}
             />
@@ -973,6 +978,267 @@ function AdvancedParametersTab({
     </>;
 }
 
+function MediaField({name, wideInput = false, initialUrl, isSaving, setIsSaving, file, setFile}: Readonly<{
+    name: string;
+    wideInput?: boolean;
+    initialUrl: string | undefined;
+    isSaving: boolean;
+    setIsSaving: (value: boolean) => void;
+    file: File | null;
+    setFile: (value: File | null) => void;
+}>) {
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!file) {
+            setPreviewUrl(null);
+            return;
+        }
+
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+
+        return () => URL.revokeObjectURL(url);
+    }, [file, setPreviewUrl]);
+
+    const handleImageChange = function (event: ChangeEvent<HTMLInputElement>) {
+        const selectedFile = event.currentTarget.files?.[0];
+        if (selectedFile) {
+            setFile(selectedFile);
+            setIsSaving(true);
+        }
+        event.currentTarget.value = "";
+    }
+
+    const handleClear = function () {
+        setFile(null);
+        setIsSaving(true);
+    }
+
+    const handleReset = function () {
+        setFile(null);
+        setIsSaving(false);
+    }
+
+    let previewElement: ReactNode
+    if (isSaving) {
+        if (previewUrl) {
+            previewElement = (
+                <Box component="img" src={previewUrl} alt="Preview"
+                     sx={{display: "block", maxWidth: "100%", maxHeight: "100%", objectFit: "contain"}}/>
+            )
+        } else {
+            if (initialUrl) {
+                previewElement = (<Typography>Previous image will be removed</Typography>)
+            } else {
+                previewElement = (<Typography>No image</Typography>)
+            }
+        }
+    } else {
+        if (initialUrl) {
+            previewElement = (
+                <Box component="img" src={initialUrl} alt="Preview"
+                     sx={{display: "block", maxWidth: "100%", maxHeight: "100%", objectFit: "contain"}}/>
+            )
+        } else {
+            previewElement = (<Typography>No image</Typography>)
+        }
+    }
+
+    return (
+        <Stack direction="column" sx={{
+            gridColumn: wideInput ? "1 / -1" : undefined,
+            gap: "6px",
+            minWidth: 0,
+            minHeight: 0,
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+        }}>
+            <Paper>
+                <Typography variant="h6" sx={{
+                    padding: "8px",
+                }}>{name}</Typography>
+            </Paper>
+            <Stack direction="row" sx={{
+                padding: "8px",
+                gap: "8px",
+            }}>
+                <Button variant="contained" component="label">
+                    Add
+                    <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        onChange={handleImageChange}
+                    />
+                </Button>
+                <Button variant="contained" onClick={handleClear}>Clear</Button>
+                <Button variant="contained" onClick={handleReset}>Reset</Button>
+            </Stack>
+            <Divider/>
+            <Box sx={{
+                flex: 1,
+                minHeight: 0,
+                minWidth: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+            }}>
+                {previewElement}
+            </Box>
+        </Stack>
+    )
+}
+
+interface MediaTabProps {
+    values: PanelGameDTO;
+    setValues: (value: PanelGameDTO) => void;
+    initialValues: PanelGameDTO;
+    iconFile: File | null;
+    setIconFile: (value: File | null) => void;
+    coverImageFile: File | null;
+    setCoverImageFile: (value: File | null) => void;
+    backgroundImageFile: File | null;
+    setBackgroundImageFile: (value: File | null) => void;
+}
+
+function MediaTab({
+                      values,
+                      setValues,
+                      initialValues,
+                      iconFile,
+                      setIconFile,
+                      coverImageFile,
+                      setCoverImageFile,
+                      backgroundImageFile,
+                      setBackgroundImageFile
+                  }: Readonly<MediaTabProps>) {
+    return <>
+        <MediaField
+            name="Icon"
+            initialUrl={initialValues.iconUrl}
+            isSaving={values.isSavingIcon ?? false}
+            setIsSaving={(value) => setValues({...values, isSavingIcon: value})}
+            file={iconFile}
+            setFile={setIconFile}
+        />
+        <MediaField
+            name="Cover image"
+            initialUrl={initialValues.coverImageUrl}
+            isSaving={values.isSavingCoverImage ?? false}
+            setIsSaving={(value) => setValues({...values, isSavingCoverImage: value})}
+            file={coverImageFile}
+            setFile={setCoverImageFile}
+        />
+        <MediaField
+            name="Background image"
+            wideInput={true}
+            initialUrl={initialValues.backgroundImageUrl}
+            isSaving={values.isSavingBackgroundImage ?? false}
+            setIsSaving={(value) => setValues({...values, isSavingBackgroundImage: value})}
+            file={backgroundImageFile}
+            setFile={setBackgroundImageFile}
+        />
+    </>;
+}
+
+interface LinksTabProps {
+    values: PanelGameDTO;
+    setValues: (value: PanelGameDTO) => void;
+}
+
+function LinksTab({
+                      values,
+                      setValues
+                  }: Readonly<LinksTabProps>) {
+    type LinkRow = { key: string; link: LinkDTO };
+
+    const [rows, setRows] = useState<LinkRow[]>(() =>
+        (values.links ?? []).map((link) => ({
+            key: crypto.randomUUID(),
+            link,
+        }))
+    );
+
+    const updateRows = (nextRows: LinkRow[]) => {
+        setRows(nextRows);
+        setValues({...values, links: nextRows.map((row) => row.link)});
+    };
+
+    const updateLink = (key: string, changes: Partial<LinkDTO>) => {
+        updateRows(rows.map((row) =>
+            row.key === key
+                ? {...row, link: {...row.link, ...changes}}
+                : row
+        ));
+    };
+
+    const moveLink = (index: number, direction: -1 | 1) => {
+        const nextRows = [...rows];
+        const target = index + direction;
+        [nextRows[index], nextRows[target]] = [nextRows[target], nextRows[index]];
+        updateRows(nextRows);
+    };
+
+    return <>
+        <Stack sx={{
+            gridColumn: "1 / -1",
+        }}>
+            <Button variant="contained" sx={{
+                maxWidth: "240px",
+                marginBottom: "16px",
+            }}
+                    onClick={() => updateRows([
+                        ...rows,
+                        {key: crypto.randomUUID(), link: {name: "", url: ""}},
+                    ])}>Add link</Button>
+
+            {rows.length === 0 && <Typography>No links</Typography>}
+
+            {rows.map(({key, link}, index) => (
+                <Box
+                    key={key}
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "minmax(100px, 1fr) minmax(200px, 2fr) 40px 40px 40px",
+                        padding: "8px",
+                        gap: "8px",
+                    }}
+                >
+                    <TextField
+                        size="small"
+                        value={link.name ?? ""}
+                        onChange={(event) => updateLink(key, {name: event.target.value})}
+                    />
+                    <TextField
+                        size="small"
+                        value={link.url ?? ""}
+                        onChange={(event) => updateLink(key, {url: event.target.value})}
+                    />
+
+                    <IconButton
+                        disabled={index === 0}
+                        onClick={() => moveLink(index, -1)}
+                    >
+                        <ArrowUpwardRoundedIcon/>
+                    </IconButton>
+                    <IconButton
+                        disabled={index === rows.length - 1}
+                        onClick={() => moveLink(index, 1)}
+                    >
+                        <ArrowDownwardRoundedIcon/>
+                    </IconButton>
+                    <IconButton
+                        onClick={() => updateRows(rows.filter((row) => row.key !== key))}
+                    >
+                        <CloseIcon/>
+                    </IconButton>
+                </Box>
+            ))}
+        </Stack>
+    </>;
+}
+
 interface GameEditFormProps {
     editMode: boolean;
     initialValues: PanelGameDTO;
@@ -1006,6 +1272,11 @@ function GameEditForm({
                       }: Readonly<GameEditFormProps>) {
 
     const [values, setValues] = useState<PanelGameDTO>(() => structuredClone(initialValues));
+    const [iconFile, setIconFile] = useState<File | null>(null);
+    const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+    const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(null);
+
+
     const [optionsSeries, setOptionsSeries] = useState<PanelSeriesDTO[]>(() => structuredClone(series));
     const [optionsPlatforms, setOptionsPlatforms] = useState<PanelPlatformDTO[]>(() => structuredClone(platforms));
     const [optionsAgeRatings, setOptionsAgeRatings] = useState<PanelAgeRatingDTO[]>(() => structuredClone(ageRatings));
@@ -1053,10 +1324,13 @@ function GameEditForm({
             <Box sx={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
+                gridTemplateRows: tab === 2
+                    ? "minmax(500px, 1fr) minmax(500px, 1fr)"
+                    : undefined,
                 columnGap: '16px',
                 rowGap: '8px',
                 padding: '8px',
-                alignContent: "start",
+                alignContent: tab === 2 ? "stretch" : "start",
                 flex: 1,
                 minHeight: 0,
                 overflowY: "auto"
@@ -1091,6 +1365,21 @@ function GameEditForm({
                     values={values}
                     setValues={setValues}
                 />}
+                {tab == 2 && <MediaTab
+                    values={values}
+                    setValues={setValues}
+                    initialValues={initialValues}
+                    iconFile={iconFile}
+                    setIconFile={setIconFile}
+                    coverImageFile={coverImageFile}
+                    setCoverImageFile={setCoverImageFile}
+                    backgroundImageFile={backgroundImageFile}
+                    setBackgroundImageFile={setBackgroundImageFile}
+                />}
+                {tab == 3 && <LinksTab
+                    values={values}
+                    setValues={setValues}
+                />}
             </Box>
 
             <Paper
@@ -1111,9 +1400,9 @@ function GameEditForm({
                                 event.preventDefault();
                                 saveGame.mutate({
                                     game: values,
-                                    icon: null,
-                                    backgroundImage: null,
-                                    coverImage: null
+                                    icon: iconFile,
+                                    backgroundImage: backgroundImageFile,
+                                    coverImage: coverImageFile
                                 }, {
                                     onSuccess: (result) => {
                                         setSelectedGameId(result.id);
@@ -1160,7 +1449,7 @@ function GameAddPane() {
     const {data: features} = useQueryFeatures();
     const {data: tags} = useQueryTags();
 
-    return <GameEditForm editMode={true} initialValues={gameDetails} series={series ?? []} platforms={platforms ?? []}
+    return <GameEditForm editMode={false} initialValues={gameDetails} series={series ?? []} platforms={platforms ?? []}
                          ageRatings={ageRatings ?? []}
                          genres={genres ?? []} regions={regions ?? []} companies={companies ?? []}
                          sources={sources ?? []} completionStatuses={completionStatuses ?? []}

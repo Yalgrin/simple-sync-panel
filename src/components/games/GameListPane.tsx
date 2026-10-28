@@ -111,8 +111,6 @@ function GameRow({
                     height: ROW_HEIGHT,
                     px: "4px",
                     py: "4px",
-                    //TODO
-                    // borderLeft: isSelected ? '3px solid primary.main' : '3px solid transparent',
                 }}>
                 <IconImage
                     src={getIconUrl()}

@@ -134,7 +134,7 @@ export function translatePlaytimeCategoryName(name: string | undefined) {
     if (code == 'LESS_THAN_HOUR') {
         return "Less than an hour";
     } else if (code == 'O1_10') {
-        return "1 do 10 hours";
+        return "1 to 10 hours";
     } else if (code == 'O10_100') {
         return "10 to 100 hours";
     } else if (code == 'O100_500') {
