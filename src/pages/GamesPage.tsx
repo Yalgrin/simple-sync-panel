@@ -2,13 +2,11 @@ import {Box, Collapse} from "@mui/material";
 import {GameListPane} from "../components/games/GameListPane.tsx";
 import {Outlet} from "react-router";
 import {FiltersPane} from "../components/filters/FiltersPane.tsx";
-import {useFilterStore} from "../store/useFilterStore.ts";
-
-const GAME_LIST_WIDTH = 340;
-const FILTERS_WIDTH = 320;
+import {useGameListStore} from "../store/useGameListStore.ts";
+import {FILTERS_WIDTH, GAME_LIST_WIDTH} from "../constants/main-layout.ts";
 
 function FilterPart() {
-    const sectionEnabled = useFilterStore((state) => state.filterSectionEnabled);
+    const sectionEnabled = useGameListStore((state) => state.filterSectionEnabled);
 
     return (<Collapse orientation="horizontal" in={sectionEnabled} sx={{height: "100%"}}>
         <Box

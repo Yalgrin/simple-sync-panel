@@ -1,0 +1,3 @@
+export const DEFAULT_LABEL_WIDTH = "120px";
+export const DEFAULT_DATE_CONTROL_FORMAT = "YYYY-MM-DDTHH:mm:ss"
+export const DEFAULT_DATE_TIME_CONTROL_FORMAT = "YYYY-MM-DDTHH:mm:ssZ"

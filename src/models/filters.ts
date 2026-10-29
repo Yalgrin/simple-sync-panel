@@ -49,7 +49,6 @@ export type IntItemPropertiesDTO = ValueListItemPropertiesDTO<number>
 
 export interface FilterActions {
     clear: () => void;
-    setFilterSectionEnabled: (value: boolean) => void;
     setSelectedFilterPresetId: (value: number | null) => void;
     setFromFilterPreset: (value: PanelFilterPresetDTO) => void;
     setUseAndFilteringStyle: (value: GameListFilterDTO["useAndFilteringStyle"]) => void;
@@ -88,7 +87,6 @@ export interface FilterActions {
 }
 
 export interface FilterData extends GameListFilterDTO {
-    filterSectionEnabled: boolean;
     selectedFilterPresetId: number | null;
     actions: FilterActions;
 }

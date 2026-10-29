@@ -1,5 +1,4 @@
 import {
-    Alert,
     Box,
     Button,
     Card,
@@ -15,6 +14,7 @@ import * as React from "react";
 import {useState} from "react";
 import {useCurrentUser, useLogin} from "../hooks/auth.ts";
 import {Navigate, useLocation, useNavigate} from "react-router";
+import {useSnackbar} from "notistack";
 
 export function LoginPage() {
     const [loginError, setLoginError] = useState(false);
@@ -25,6 +25,7 @@ export function LoginPage() {
     const {data: currentUser, isLoading} = useCurrentUser()
     const navigate = useNavigate();
     const {search} = useLocation();
+    const {enqueueSnackbar} = useSnackbar();
 
     const loginMutation = useLogin()
 
@@ -55,6 +56,10 @@ export function LoginPage() {
             rememberMe: rememberMeCheckbox.checked,
         }, {
             onSuccess: () => navigate(destination, {replace: true}),
+            onError: () => enqueueSnackbar('Login failed. Please check your credentials.', {
+                variant: 'error',
+                anchorOrigin: {vertical: 'bottom', horizontal: 'right'}
+            }),
         });
     };
 
@@ -101,11 +106,6 @@ export function LoginPage() {
                 padding: '4rem',
                 overflow: 'inherit'
             }}>
-                {loginMutation.isError && (
-                    <Alert severity="error" sx={{marginBottom: '48px'}}>
-                        Unable to sign in. Check your credentials and try again.
-                    </Alert>
-                )}
                 <Typography
                     component="h1"
                     variant="h4"

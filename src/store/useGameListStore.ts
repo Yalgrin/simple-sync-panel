@@ -2,9 +2,11 @@ import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 
 export type GameListState = {
+    filterSectionEnabled: boolean;
     selectedGameId?: number | null;
     collapsedGroups: Set<string>;
     actions: {
+        setFilterSectionEnabled: (value: boolean) => void;
         setSelectedGameId: (id: number | undefined | null) => void;
         setCollapsedGroups: (groups: Set<string>) => void;
         toggleCollapsedGroup: (name: string) => void;
@@ -13,9 +15,11 @@ export type GameListState = {
 
 export const useGameListStore = create<GameListState>()(
     persist((set) => ({
+            filterSectionEnabled: true,
             selectedGameId: null,
             collapsedGroups: new Set<string>(),
             actions: {
+                setFilterSectionEnabled: (value: boolean) => set({filterSectionEnabled: value}),
                 setSelectedGameId: (id: number | undefined | null) => set({selectedGameId: id}),
                 setCollapsedGroups: (groups: Set<string>) => set({collapsedGroups: groups}),
                 toggleCollapsedGroup: (name: string) => set((state) => {

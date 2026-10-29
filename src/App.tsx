@@ -1,10 +1,11 @@
-import {Box, CircularProgress, createTheme, CssBaseline, ThemeProvider} from "@mui/material";
+import {Box, CircularProgress, createTheme, CssBaseline, Stack, ThemeProvider, Typography} from "@mui/material";
 import type {ReactNode} from "react";
 import {Navigate, Outlet, useLocation, useMatch} from "react-router";
 import {MainLayout} from "./components/layout/MainLayout.tsx";
 import {useCurrentUser} from "./hooks/auth.ts";
 import {useSseSession} from "./hooks/useSseSession.tsx";
 import {DialogProvider} from "./components/DialogProvider.tsx";
+import {SnackbarProvider} from "notistack";
 
 //TODO
 const theme = createTheme({
@@ -28,13 +29,29 @@ function LoadingPage() {
     );
 }
 
+//TODO
+function ErrorPage() {
+    return (
+        <Stack sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100%",
+        }}>
+            <Typography variant="h4" color="error">Error</Typography>
+            <Typography variant="body1" color="error">Something went wrong</Typography>
+        </Stack>
+    );
+}
+
 function App() {
-    const {data: currentUser, isLoading} = useCurrentUser()
+    const {data: currentUser, isLoading, error} = useCurrentUser()
     const isLoginView = useMatch("/login");
     const {pathname, search, hash} = useLocation();
     useSseSession();
 
-    if (!isLoading && !isLoginView && !currentUser) {
+    if (!error && !isLoading && !isLoginView && !currentUser) {
         const requestedPath = pathname + search + hash;
         const params = new URLSearchParams({redirect: requestedPath});
         return <Navigate to={`/login?${params.toString()}`} replace/>;
@@ -44,6 +61,8 @@ function App() {
 
     if (isLoading) {
         mainLayout = <LoadingPage/>;
+    } else if (error) {
+        mainLayout = <ErrorPage/>;
     } else if (isLoginView) {
         mainLayout = <Outlet/>
     } else {
@@ -54,7 +73,9 @@ function App() {
         <ThemeProvider theme={theme}>
             <CssBaseline enableColorScheme/>
             <DialogProvider>
-                {mainLayout}
+                <SnackbarProvider>
+                    {mainLayout}
+                </SnackbarProvider>
             </DialogProvider>
         </ThemeProvider>
     )

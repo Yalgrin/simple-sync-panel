@@ -23,7 +23,6 @@ import type {
     PanelFeatureDTO,
     PanelGameDTO,
     PanelGenreDTO,
-    PanelObjectDTO,
     PanelPlatformDTO,
     PanelRegionDTO,
     PanelSeriesDTO,
@@ -33,670 +32,35 @@ import type {
 import {
     Box,
     Button,
-    Checkbox,
     CircularProgress,
     Divider,
     IconButton,
     Paper,
-    Popover,
     Stack,
     Tab,
     Tabs,
     TextField,
     Typography
 } from "@mui/material";
-import {type ChangeEvent, type ReactNode, useEffect, useMemo, useState} from "react";
-import {DatePicker, DateTimePicker} from "@mui/x-date-pickers";
-import dayjs from 'dayjs';
+import {type ChangeEvent, type ReactNode, useEffect, useState} from "react";
 import {useGameListStore} from "../../store/useGameListStore.ts";
-import {List, type RowComponentProps} from "react-window";
-import {useDialog} from "../../hooks/useDialog.ts";
-import {AddObjectDialog} from "../dialogs/AddObjectDialog.tsx";
-import NumberField from "../NumberField.tsx";
-import {formatPlaytime} from "../../functions/util.ts";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
+import {TextControl} from "../common/form-controls/TextControl.tsx";
+import {LargeTextControl} from "../common/form-controls/LargeTextControl.tsx";
+import {CheckboxControl} from "../common/form-controls/CheckboxControl.tsx";
+import {DateTimeControl} from "../common/form-controls/DateTimeControl.tsx";
+import {DateControl} from "../common/form-controls/DateControl.tsx";
+import {ScoreControl} from "../common/form-controls/ScoreControl.tsx";
+import {TimePlayedControl} from "../common/form-controls/TimePlayedControl.tsx";
+import {NumericControl} from "../common/form-controls/NumericControl.tsx";
+import {MultipleObjectControl} from "../common/form-controls/MultipleObjectControl.tsx";
+import {SingleObjectControl} from "../common/form-controls/SingleObjectControl.tsx";
 
 //TODO extract components
 //TODO change blocker on change
 //TODO media and links tabs
-
-function RegularTextField({name, value, setValue, disabled = false}: Readonly<{
-    name: string;
-    value: string;
-    setValue: (value: string) => void;
-    disabled?: boolean;
-}>) {
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr)",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <TextField
-                size="small"
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
-                fullWidth
-                disabled={disabled}
-            />
-        </Box>
-    )
-}
-
-function TimePlayedField({name, value, setValue, disabled = false}: Readonly<{
-    name: string;
-    value: number;
-    setValue: (value: number) => void;
-    disabled?: boolean;
-}>) {
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr) max-content",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <TextField
-                size="small"
-                type="number"
-                slotProps={{htmlInput: {min: 0, step: 1}}}
-                value={value}
-                onChange={(event) => {
-                    const input = event.target.value;
-                    if (input === "") {
-                        setValue(0);
-                        return;
-                    }
-
-                    const nextValue = Number(input);
-                    if (Number.isSafeInteger(nextValue) && nextValue >= 0) {
-                        setValue(nextValue);
-                    }
-                }}
-                sx={{
-                    "& input::-webkit-inner-spin-button, & input::-webkit-outer-spin-button": {
-                        WebkitAppearance: "none",
-                        margin: 0,
-                    },
-                    "& input[type=number]": {
-                        MozAppearance: "textfield",
-                    },
-                }}
-                fullWidth
-                disabled={disabled}
-            />
-            <Typography>{formatPlaytime(value)}</Typography>
-        </Box>
-    )
-}
-
-function NumericField({name, value, setValue, disabled = false}: Readonly<{
-    name: string;
-    value: number;
-    setValue: (value: number) => void;
-    disabled?: boolean;
-}>) {
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr)",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <TextField
-                size="small"
-                type="number"
-                slotProps={{htmlInput: {min: 0, step: 1}}}
-                value={value}
-                onChange={(event) => {
-                    const input = event.target.value;
-                    if (input === "") {
-                        setValue(0);
-                        return;
-                    }
-
-                    const nextValue = Number(input);
-                    if (Number.isSafeInteger(nextValue) && nextValue >= 0) {
-                        setValue(nextValue);
-                    }
-                }}
-                sx={{
-                    "& input::-webkit-inner-spin-button, & input::-webkit-outer-spin-button": {
-                        WebkitAppearance: "none",
-                        margin: 0,
-                    },
-                    "& input[type=number]": {
-                        MozAppearance: "textfield",
-                    },
-                }}
-                fullWidth
-                disabled={disabled}
-            />
-        </Box>
-    )
-}
-
-function LargeTextField({name, value, setValue}: Readonly<{
-    name: string;
-    value: string;
-    setValue: (value: string) => void;
-}>) {
-    return (
-        <Box sx={{
-            gridColumn: "1 / -1",
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr)",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <TextField
-                size="small"
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
-                fullWidth
-                multiline
-                minRows={10}
-                maxRows={50}
-            />
-        </Box>
-    )
-}
-
-function CheckboxField({name, value, setValue}: Readonly<{
-    name: string;
-    value: boolean;
-    setValue: (value: boolean) => void;
-}>) {
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr)",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <Checkbox
-                size="small"
-                sx={{justifySelf: "start"}}
-                checked={value ?? false}
-                onChange={(event) => setValue(event.target.checked)}
-            />
-        </Box>
-    )
-}
-
-function ScoreField({name, value, setValue}: Readonly<{
-    name: string;
-    value: number | undefined | null;
-    setValue: (value: number | null) => void;
-}>) {
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr)",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <NumberField
-                size="small"
-                value={value}
-                onValueChange={setValue}
-                min={0}
-                max={100}/>
-        </Box>
-    )
-}
-
-function DateField({name, value, setValue}: Readonly<{
-    name: string;
-    value: string;
-    setValue: (value: string) => void;
-}>) {
-    const format = "YYYY-MM-DDTHH:mm:ss"
-
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr)",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <DatePicker
-                value={value ? dayjs(value, format) : null}
-                onChange={(newValue) => setValue(newValue ? dayjs(newValue).format(format) : "")}
-                slotProps={{
-                    textField: {size: "small", fullWidth: true},
-                }}
-            />
-        </Box>
-    )
-}
-
-function DateTimeField({name, value, setValue, disabled = false}: Readonly<{
-    name: string;
-    value: string;
-    setValue: (value: string) => void;
-    disabled?: boolean;
-}>) {
-    const format = "YYYY-MM-DDTHH:mm:ssZ"
-
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr)",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <DateTimePicker
-                views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
-                value={value ? dayjs(value, format) : null}
-                onChange={(newValue) => setValue(newValue ? dayjs(newValue).format(format) : "")}
-                slotProps={{
-                    textField: {size: "small", fullWidth: true},
-                }}
-                disabled={disabled}
-            />
-        </Box>
-    )
-}
-
-function SingleSelectButton<T extends PanelObjectDTO>({name, value, setValue, options, setOptions}: Readonly<{
-    name: string;
-    value: T | undefined | null;
-    setValue: (value: T | null) => void;
-    options: T[];
-    setOptions: (options: T[]) => void;
-}>) {
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const [searchText, setSearchText] = useState("");
-
-    const optionsWithEmpty = useMemo(() => {
-        return [{name: "(None)"} as T, ...options];
-    }, [options]);
-
-    const filteredOptions = useMemo(() => {
-        const query = searchText.trim().toLowerCase();
-        return query
-            ? optionsWithEmpty.filter((option) => (option.name ?? "").toLowerCase().includes(query))
-            : optionsWithEmpty;
-    }, [optionsWithEmpty, searchText]);
-
-    const setOption = (option: T | null) => {
-        setAnchorEl(null);
-        setSearchText("");
-        setValue(option);
-    }
-
-    const addOption = (name: string) => {
-        const option = options.find((option) => option.name === name);
-        if (!option) {
-            const newOption = {name: name} as T;
-            let newOptionList = [...options, newOption];
-            newOptionList = newOptionList.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
-            setOptions(newOptionList);
-            setOption(newOption);
-        }
-    }
-
-    const {openDialog} = useDialog();
-
-    const openAddDialog = () => {
-        openDialog({
-            title: "Add new object",
-            render: ({close}) => {
-                return <AddObjectDialog close={close} callback={addOption}/>;
-            },
-        });
-    }
-
-    function OptionRow({
-                           index,
-                           style,
-                           items,
-                           onSelect,
-                           ariaAttributes,
-                       }: RowComponentProps<{
-        items: T[];
-        onSelect: (option: T | null) => void;
-    }>) {
-        const option = items[index];
-
-        return (
-            <Box style={style} {...ariaAttributes}>
-                <Box
-                    component="button"
-                    type="button"
-                    onClick={() => onSelect(option)}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: "100%",
-                        height: "100%",
-                        px: 1,
-                        border: 0,
-                        bgcolor: "transparent",
-                        color: "text.primary",
-                        textAlign: "left",
-                        cursor: "pointer",
-                        "&:hover": {bgcolor: "action.hover"},
-                    }}
-                >
-                    <Typography noWrap>{option.name ?? ""}</Typography>
-                </Box>
-            </Box>
-        );
-    }
-
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr) 18px",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <Button
-                variant="outlined"
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                sx={{
-                    justifyContent: "flex-start",
-                    textTransform: "none",
-                    minWidth: 0,
-                    overflow: "hidden",
-                    height: "40px",
-                    maxHeight: "40px",
-                    color: "text.primary",
-                    borderColor: (theme) =>
-                        theme.palette.mode === "dark"
-                            ? "rgba(255, 255, 255, 0.23)"
-                            : "rgba(0, 0, 0, 0.23)",
-                    "&:hover": {
-                        borderColor: "text.primary",
-                    },
-                    "&:focus-visible": {
-                        borderColor: "primary.main",
-                    },
-                }}
-            >
-                <Typography noWrap>
-                    {value?.name ?? ""}
-                </Typography>
-            </Button>
-
-            <Button size="small" variant="contained" sx={{
-                color: "text.primary",
-                minWidth: 18,
-                width: 18, height: "100%", p: 0, fontSize: 14, lineHeight: 1
-            }} onClick={() => {
-                setAnchorEl(null);
-                setSearchText("");
-                openAddDialog();
-            }}>+</Button>
-
-            <Popover
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                onClose={() => {
-                    setAnchorEl(null);
-                    setSearchText("");
-                }}
-                anchorOrigin={{vertical: "bottom", horizontal: "left"}}
-                transformOrigin={{vertical: "top", horizontal: "left"}}
-                slotProps={{
-                    paper: {sx: {width: anchorEl?.clientWidth, overflow: "hidden"}},
-                }}
-            >
-                <Box sx={{p: 1}}>
-                    <TextField
-                        size="small"
-                        fullWidth
-                        autoFocus
-                        placeholder="Search..."
-                        value={searchText}
-                        onChange={(event) => setSearchText(event.target.value)}
-                    />
-                </Box>
-                <List
-                    rowComponent={OptionRow}
-                    rowCount={filteredOptions.length}
-                    rowHeight={40}
-                    rowProps={{
-                        items: filteredOptions,
-                        onSelect: setOption,
-                    }}
-                    style={{
-                        height: Math.min(filteredOptions.length * 40, 320),
-                        width: "100%",
-                    }}
-                />
-            </Popover>
-        </Box>
-    );
-}
-
-function MultipleSelectButton<T extends PanelObjectDTO>({name, value, setValue, options, setOptions}: Readonly<{
-    name: string;
-    value: T[];
-    setValue: (value: T[]) => void;
-    options: T[];
-    setOptions: (options: T[]) => void;
-}>) {
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const [searchText, setSearchText] = useState("");
-    const [onlySelected, setOnlySelected] = useState(false);
-
-    const selectedIds = useMemo(
-        () => new Set(value.map((option) => option.id)),
-        [value]
-    );
-
-    const filteredOptions = useMemo(() => {
-        const query = searchText.trim().toLowerCase();
-        let filtered = options;
-        if (onlySelected) {
-            filtered = filtered.filter((option) => selectedIds.has(option.id));
-        }
-        return query
-            ? filtered.filter((option) => (option.name ?? "").toLowerCase().includes(query))
-            : filtered;
-    }, [options, onlySelected, selectedIds, searchText]);
-
-    const toggleOption = (option: T) => {
-        setValue(
-            selectedIds.has(option.id)
-                ? value.filter((selected) => selected.id !== option.id)
-                : [...value, option]
-        );
-    };
-
-    const addOption = (name: string) => {
-        const option = options.find((option) => option.name === name);
-        if (!option) {
-            const newOption = {name: name} as T;
-            setOptions([...options, newOption]);
-            toggleOption(newOption);
-        }
-    }
-
-    const {openDialog} = useDialog();
-
-    const openAddDialog = () => {
-        openDialog({
-            title: "Add new object",
-            render: ({close}) => {
-                return <AddObjectDialog close={close} callback={addOption}/>;
-            },
-        });
-    }
-
-    function OptionRow({
-                           index,
-                           style,
-                           items,
-                           selected,
-                           onToggle,
-                           ariaAttributes,
-                       }: RowComponentProps<{
-        items: T[];
-        selected: Set<T["id"]>;
-        onToggle: (option: T) => void;
-    }>) {
-        const option = items[index];
-
-        return (
-            <Box style={style} {...ariaAttributes}>
-                <Box
-                    component="button"
-                    type="button"
-                    onClick={() => onToggle(option)}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: "100%",
-                        height: "100%",
-                        px: 1,
-                        border: 0,
-                        bgcolor: "transparent",
-                        color: "text.primary",
-                        textAlign: "left",
-                        cursor: "pointer",
-                        "&:hover": {bgcolor: "action.hover"},
-                    }}
-                >
-                    <Checkbox checked={selected.has(option.id)} tabIndex={-1}/>
-                    <Typography noWrap>{option.name ?? ""}</Typography>
-                </Box>
-            </Box>
-        );
-    }
-
-    return (
-        <Box sx={{
-            display: "grid",
-            gridTemplateColumns: "120px minmax(0, 1fr) 18px",
-            gap: "6px",
-            alignItems: "center",
-        }}>
-            <Typography>{name}</Typography>
-            <Box sx={{position: "relative", minWidth: 0}}>
-                <Button
-                    variant="outlined"
-                    onClick={(event) => {
-                        setOnlySelected(false);
-                        setAnchorEl(event.currentTarget);
-                    }}
-                    sx={{
-                        justifyContent: "flex-start",
-                        textTransform: "none",
-                        minWidth: 0,
-                        width: "100%",
-                        overflow: "hidden",
-                        height: "40px",
-                        maxHeight: "40px",
-                        color: "text.primary",
-                        borderColor: (theme) =>
-                            theme.palette.mode === "dark"
-                                ? "rgba(255, 255, 255, 0.23)"
-                                : "rgba(0, 0, 0, 0.23)",
-                        "&:hover": {
-                            borderColor: "text.primary",
-                        },
-                        "&:focus-visible": {
-                            borderColor: "primary.main",
-                        },
-                    }}
-                >
-                    <Typography noWrap sx={{
-                        paddingRight: "16px"
-                    }}>
-                        {value
-                            .map((option) => option.name ?? "")
-                            .sort((a, b) => a.localeCompare(b)).join(", ")}
-                    </Typography>
-                </Button>
-                <IconButton
-                    size="small"
-                    onClick={() => setValue([])}
-                    sx={{
-                        position: "absolute",
-                        right: 4,
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                    }}
-                    disabled={value.length === 0}
-                >
-                    <CloseIcon fontSize="small"/>
-                </IconButton>
-            </Box>
-
-            <Button size="small" variant="contained" sx={{
-                color: "text.primary",
-                minWidth: 18,
-                width: 18, height: "100%", p: 0, fontSize: 14, lineHeight: 1
-            }} onClick={() => {
-                setAnchorEl(null);
-                setSearchText("");
-                openAddDialog();
-            }}>+</Button>
-
-            <Popover
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                onClose={() => {
-                    setAnchorEl(null);
-                    setSearchText("");
-                }}
-                anchorOrigin={{vertical: "bottom", horizontal: "left"}}
-                transformOrigin={{vertical: "top", horizontal: "left"}}
-                slotProps={{
-                    paper: {sx: {width: anchorEl?.clientWidth, overflow: "hidden"}},
-                }}
-            >
-                <Box sx={{
-                    display: "grid",
-                    gridTemplateColumns: "minmax(0, 1fr) 24px",
-                    gap: "6px",
-                    p: 1
-                }}>
-                    <TextField
-                        size="small"
-                        fullWidth
-                        autoFocus
-                        placeholder="Search..."
-                        value={searchText}
-                        onChange={(event) => setSearchText(event.target.value)}
-                    />
-                    <Checkbox checked={onlySelected ?? false}
-                              onChange={() => setOnlySelected(!onlySelected)}></Checkbox>
-                </Box>
-                <List
-                    rowComponent={OptionRow}
-                    rowCount={filteredOptions.length}
-                    rowHeight={40}
-                    rowProps={{
-                        items: filteredOptions,
-                        selected: selectedIds,
-                        onToggle: toggleOption,
-                    }}
-                    style={{
-                        height: Math.min(filteredOptions.length * 40, 320),
-                        width: "100%",
-                    }}
-                />
-            </Popover>
-        </Box>
-    );
-}
 
 function CancelButton({editMode, gameId}: Readonly<{ editMode: boolean, gameId: number | undefined | null }>) {
     const selectedGameId = useGameListStore((state) => state.selectedGameId);
@@ -769,121 +133,133 @@ function MainParametersTab({
                                setOptionsTags,
                            }: Readonly<MainParametersTabProps>) {
     return <>
-        <RegularTextField
+        <TextControl
             name="Name"
             value={values.name ?? ""}
             setValue={(value) => setValues({...values, name: value})}
         />
-        <DateField
+        <DateControl
             name="Release date"
             value={values.releaseDate ?? ""}
             setValue={(value) => setValues({...values, releaseDate: value})}
         />
-        <RegularTextField
+        <TextControl
             name="Sorting name"
             value={values.sortingName ?? ""}
             setValue={(value) => setValues({...values, sortingName: value})}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Series"
             value={values.series ?? []}
             setValue={(value) => setValues({...values, series: value})}
             options={optionsSeries ?? []}
             setOptions={setOptionsSeries}
+            allowAdd={true}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Platform"
             value={values.platforms ?? []}
             setValue={(value) => setValues({...values, platforms: value})}
             options={optionsPlatforms ?? []}
             setOptions={setOptionsPlatforms}
+            allowAdd={true}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Age rating"
             value={values.ageRatings ?? []}
             setValue={(value) => setValues({...values, ageRatings: value})}
             options={optionsAgeRatings ?? []}
             setOptions={setOptionsAgeRatings}
+            allowAdd={true}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Genres"
             value={values.genres ?? []}
             setValue={(value) => setValues({...values, genres: value})}
             options={optionsGenres ?? []}
             setOptions={setOptionsGenres}
+            allowAdd={true}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Region"
             value={values.regions ?? []}
             setValue={(value) => setValues({...values, regions: value})}
             options={optionsRegions ?? []}
             setOptions={setOptionsRegions}
+            allowAdd={true}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Developers"
             value={values.developers ?? []}
             setValue={(value) => setValues({...values, developers: value})}
             options={optionsCompanies ?? []}
             setOptions={setOptionsCompanies}
+            allowAdd={true}
         />
-        <SingleSelectButton
+        <SingleObjectControl
             name="Source"
             value={values.source}
             setValue={(value) => setValues({...values, source: value})}
             options={optionsSources ?? []}
             setOptions={setOptionsSources}
+            allowAdd={true}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Publishers"
             value={values.publishers ?? []}
             setValue={(value) => setValues({...values, publishers: value})}
             options={optionsCompanies ?? []}
             setOptions={setOptionsCompanies}
+            allowAdd={true}
         />
-        <SingleSelectButton
+        <SingleObjectControl
             name="Completion status"
             value={values.completionStatus}
             setValue={(value) => setValues({...values, completionStatus: value})}
             options={optionsCompletionStatuses ?? []}
             setOptions={setOptionsCompletionStatuses}
+            allowAdd={true}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Categories"
             value={values.categories ?? []}
             setValue={(value) => setValues({...values, categories: value})}
             options={optionsCategories ?? []}
             setOptions={setOptionsCategories}
+            allowAdd={true}
         />
-        <ScoreField
+        <ScoreControl
             name="User score"
             value={values.userScore}
             setValue={(value) => setValues({...values, userScore: value})}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Features"
             value={values.features ?? []}
             setValue={(value) => setValues({...values, features: value})}
             options={optionsFeatures ?? []}
             setOptions={setOptionsFeatures}
+            allowAdd={true}
         />
-        <ScoreField
+        <ScoreControl
             name="Critic score"
             value={values.criticScore}
             setValue={(value) => setValues({...values, criticScore: value})}
         />
-        <MultipleSelectButton
+        <MultipleObjectControl
             name="Tags"
             value={values.tags ?? []}
             setValue={(value) => setValues({...values, tags: value})}
             options={optionsTags ?? []}
             setOptions={setOptionsTags}
+            allowAdd={true}
         />
-        <ScoreField
+        <ScoreControl
             name="Community score"
             value={values.communityScore}
             setValue={(value) => setValues({...values, communityScore: value})}
         />
-        <LargeTextField
+        <LargeTextControl
             name="Description"
             value={values.description ?? ""}
             setValue={(value) => setValues({...values, description: value})}
@@ -901,76 +277,76 @@ function AdvancedParametersTab({
                                    setValues,
                                }: Readonly<AdvancedParametersTabProps>) {
     return <>
-        <DateTimeField
+        <DateTimeControl
             name="Last played"
             value={values.lastActivity ?? ""}
             setValue={(value) => setValues({...values, lastActivity: value})}
         />
-        <RegularTextField
+        <TextControl
             name="Game id"
             value={values.gameId ?? ""}
             setValue={() => {
             }}
             disabled={true}
         />
-        <TimePlayedField
+        <TimePlayedControl
             name="Time played"
             value={values.playtime}
             setValue={(value) => setValues({...values, playtime: value})}
         />
-        <RegularTextField
+        <TextControl
             name="Database id"
             value={values.playniteId ?? ""}
             setValue={() => {
             }}
             disabled={true}
         />
-        <NumericField
+        <NumericControl
             name="Play count"
             value={values.playCount}
             setValue={(value) => setValues({...values, playCount: value})}
         />
-        <RegularTextField
+        <TextControl
             name="Library"
             value={values.plugin?.name ?? "Playnite"}
             setValue={() => {
             }}
             disabled={true}
         />
-        <RegularTextField
+        <TextControl
             name="Version"
             value={values.version ?? ""}
             setValue={(value) => setValues({...values, version: value})}
         />
         <Box/>
-        <RegularTextField
+        <TextControl
             name="Manual"
             value={values.manual ?? ""}
             setValue={(value) => setValues({...values, manual: value})}
         />
         <Box/>
-        <CheckboxField
+        <CheckboxControl
             name="Hidden"
             value={values.isHidden ?? false}
             setValue={(value) => setValues({...values, isHidden: value})}
         />
-        <CheckboxField
+        <CheckboxControl
             name="Favorite"
             value={values.isFavorite ?? false}
             setValue={(value) => setValues({...values, isFavorite: value})}
         />
-        <DateTimeField
+        <DateTimeControl
             name="Added"
             value={values.added ?? ""}
             setValue={(value) => setValues({...values, added: value})}
         />
-        <DateTimeField
+        <DateTimeControl
             name="Modified"
             value={values.modified ?? ""}
             setValue={(value) => setValues({...values, modified: value})}
             disabled={true}
         />
-        <LargeTextField
+        <LargeTextControl
             name="Notes"
             value={values.notes ?? ""}
             setValue={(value) => setValues({...values, notes: value})}
@@ -1003,7 +379,7 @@ function MediaField({name, wideInput = false, initialUrl, isSaving, setIsSaving,
 
     const handleImageChange = function (event: ChangeEvent<HTMLInputElement>) {
         const selectedFile = event.currentTarget.files?.[0];
-        if (selectedFile) {
+        if (selectedFile && selectedFile.type.startsWith("image/")) {
             setFile(selectedFile);
             setIsSaving(true);
         }
@@ -1029,7 +405,7 @@ function MediaField({name, wideInput = false, initialUrl, isSaving, setIsSaving,
             )
         } else {
             if (initialUrl) {
-                previewElement = (<Typography>Previous image will be removed</Typography>)
+                previewElement = (<Typography>Existing image will be removed</Typography>)
             } else {
                 previewElement = (<Typography>No image</Typography>)
             }
@@ -1142,31 +518,20 @@ function MediaTab({
     </>;
 }
 
+type LinkRow = { key: string; link: LinkDTO };
+
 interface LinksTabProps {
-    values: PanelGameDTO;
-    setValues: (value: PanelGameDTO) => void;
+    rows: LinkRow[];
+    setRows: (value: LinkRow[]) => void;
 }
 
 function LinksTab({
-                      values,
-                      setValues
+                      rows,
+                      setRows
                   }: Readonly<LinksTabProps>) {
-    type LinkRow = { key: string; link: LinkDTO };
-
-    const [rows, setRows] = useState<LinkRow[]>(() =>
-        (values.links ?? []).map((link) => ({
-            key: crypto.randomUUID(),
-            link,
-        }))
-    );
-
-    const updateRows = (nextRows: LinkRow[]) => {
-        setRows(nextRows);
-        setValues({...values, links: nextRows.map((row) => row.link)});
-    };
 
     const updateLink = (key: string, changes: Partial<LinkDTO>) => {
-        updateRows(rows.map((row) =>
+        setRows(rows.map((row) =>
             row.key === key
                 ? {...row, link: {...row.link, ...changes}}
                 : row
@@ -1177,7 +542,7 @@ function LinksTab({
         const nextRows = [...rows];
         const target = index + direction;
         [nextRows[index], nextRows[target]] = [nextRows[target], nextRows[index]];
-        updateRows(nextRows);
+        setRows(nextRows);
     };
 
     return <>
@@ -1188,7 +553,7 @@ function LinksTab({
                 maxWidth: "240px",
                 marginBottom: "16px",
             }}
-                    onClick={() => updateRows([
+                    onClick={() => setRows([
                         ...rows,
                         {key: crypto.randomUUID(), link: {name: "", url: ""}},
                     ])}>Add link</Button>
@@ -1229,7 +594,7 @@ function LinksTab({
                         <ArrowDownwardRoundedIcon/>
                     </IconButton>
                     <IconButton
-                        onClick={() => updateRows(rows.filter((row) => row.key !== key))}
+                        onClick={() => setRows(rows.filter((row) => row.key !== key))}
                     >
                         <CloseIcon/>
                     </IconButton>
@@ -1276,7 +641,6 @@ function GameEditForm({
     const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
     const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(null);
 
-
     const [optionsSeries, setOptionsSeries] = useState<PanelSeriesDTO[]>(() => structuredClone(series));
     const [optionsPlatforms, setOptionsPlatforms] = useState<PanelPlatformDTO[]>(() => structuredClone(platforms));
     const [optionsAgeRatings, setOptionsAgeRatings] = useState<PanelAgeRatingDTO[]>(() => structuredClone(ageRatings));
@@ -1289,9 +653,20 @@ function GameEditForm({
     const [optionsFeatures, setOptionsFeatures] = useState<PanelFeatureDTO[]>(() => structuredClone(features));
     const [optionsTags, setOptionsTags] = useState<PanelTagDTO[]>(() => structuredClone(tags));
 
+    const [rows, setRows] = useState<LinkRow[]>(() =>
+        (values.links ?? []).map((link) => ({
+            key: crypto.randomUUID(),
+            link,
+        }))
+    );
+
+    const updateRows = (nextRows: LinkRow[]) => {
+        setRows(nextRows);
+        setValues({...values, links: nextRows.map((row) => row.link)});
+    };
+
     const saveGame = useSaveGame();
     const navigate = useNavigate();
-    const setSelectedGameId = useGameListStore((state) => state.actions.setSelectedGameId);
 
     const [tab, setTab] = useState(0);
 
@@ -1377,8 +752,8 @@ function GameEditForm({
                     setBackgroundImageFile={setBackgroundImageFile}
                 />}
                 {tab == 3 && <LinksTab
-                    values={values}
-                    setValues={setValues}
+                    rows={rows}
+                    setRows={updateRows}
                 />}
             </Box>
 
@@ -1405,7 +780,6 @@ function GameEditForm({
                                     coverImage: coverImageFile
                                 }, {
                                     onSuccess: (result) => {
-                                        setSelectedGameId(result.id);
                                         navigate('/games/' + result.id);
                                     }
                                 })
@@ -1449,11 +823,20 @@ function GameAddPane() {
     const {data: features} = useQueryFeatures();
     const {data: tags} = useQueryTags();
 
-    return <GameEditForm editMode={false} initialValues={gameDetails} series={series ?? []} platforms={platforms ?? []}
+    return <GameEditForm key="new"
+                         editMode={false}
+                         initialValues={gameDetails}
+                         series={series ?? []}
+                         platforms={platforms ?? []}
                          ageRatings={ageRatings ?? []}
-                         genres={genres ?? []} regions={regions ?? []} companies={companies ?? []}
-                         sources={sources ?? []} completionStatuses={completionStatuses ?? []}
-                         categories={categories ?? []} features={features ?? []} tags={tags ?? []}/>;
+                         genres={genres ?? []}
+                         regions={regions ?? []}
+                         companies={companies ?? []}
+                         sources={sources ?? []}
+                         completionStatuses={completionStatuses ?? []}
+                         categories={categories ?? []}
+                         features={features ?? []}
+                         tags={tags ?? []}/>;
 }
 
 function GameEditPane({id}: Readonly<{ id: string }>) {
@@ -1492,11 +875,20 @@ function GameEditPane({id}: Readonly<{ id: string }>) {
         return null;
     }
 
-    return <GameEditForm editMode={true} initialValues={gameDetails} series={series ?? []} platforms={platforms ?? []}
+    return <GameEditForm key={gameDetails.id}
+                         editMode={true}
+                         initialValues={gameDetails}
+                         series={series ?? []}
+                         platforms={platforms ?? []}
                          ageRatings={ageRatings ?? []}
-                         genres={genres ?? []} regions={regions ?? []} companies={companies ?? []}
-                         sources={sources ?? []} completionStatuses={completionStatuses ?? []}
-                         categories={categories ?? []} features={features ?? []} tags={tags ?? []}/>
+                         genres={genres ?? []}
+                         regions={regions ?? []}
+                         companies={companies ?? []}
+                         sources={sources ?? []}
+                         completionStatuses={completionStatuses ?? []}
+                         categories={categories ?? []}
+                         features={features ?? []}
+                         tags={tags ?? []}/>
 }
 
 export function GameAddEditPane() {

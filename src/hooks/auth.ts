@@ -7,6 +7,7 @@ import {
     type LoginRequest,
     type UserResponse
 } from "../models/auth.ts";
+import {ALL_LIBRARY_OBJECTS_QUERY_KEY, GAME_GLOBAL_QUERY_KEY} from "../models/objects.ts";
 
 export function useCurrentUser() {
     const queryClient = useQueryClient();
@@ -48,6 +49,8 @@ export function useLogout() {
         mutationFn: () => logout(queryClient),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: AUTH_GROUP_QUERY_KEY});
+            await queryClient.invalidateQueries({queryKey: ALL_LIBRARY_OBJECTS_QUERY_KEY});
+            await queryClient.invalidateQueries({queryKey: GAME_GLOBAL_QUERY_KEY});
         },
     })
 }

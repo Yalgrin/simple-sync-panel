@@ -5,6 +5,7 @@ export const GAME_LIST_QUERY_KEY = ["game", "filter"] as const;
 export const GAME_DETAILS_QUERY_KEY = ["game", "details"] as const;
 export const RELEASE_YEAR_QUERY_KEY = ["game", "release-years"] as const;
 
+export const ALL_LIBRARY_OBJECTS_QUERY_KEY = ["library"] as const;
 export const LIBRARY_PLUGIN_QUERY_KEY = ["library", "library-plugin"] as const;
 export const PLATFORM_QUERY_KEY = ["library", "platform"] as const;
 export const AGE_RATING_QUERY_KEY = ["library", "age-rating"] as const;
@@ -47,35 +48,25 @@ export interface PanelPlatformDTO extends PanelObjectDTO {
     isSavingBackgroundImage?: boolean;
 }
 
-export interface PanelAgeRatingDTO extends PanelObjectDTO {
-}
+export type PanelAgeRatingDTO = PanelObjectDTO
 
-export interface PanelGenreDTO extends PanelObjectDTO {
-}
+export type PanelGenreDTO = PanelObjectDTO
 
-export interface PanelRegionDTO extends PanelObjectDTO {
-}
+export type PanelRegionDTO = PanelObjectDTO
 
-export interface PanelCompanyDTO extends PanelObjectDTO {
-}
+export type PanelCompanyDTO = PanelObjectDTO
 
-export interface PanelSourceDTO extends PanelObjectDTO {
-}
+export type PanelSourceDTO = PanelObjectDTO
 
-export interface PanelCompletionStatusDTO extends PanelObjectDTO {
-}
+export type PanelCompletionStatusDTO = PanelObjectDTO
 
-export interface PanelCategoryDTO extends PanelObjectDTO {
-}
+export type PanelCategoryDTO = PanelObjectDTO
 
-export interface PanelFeatureDTO extends PanelObjectDTO {
-}
+export type PanelFeatureDTO = PanelObjectDTO
 
-export interface PanelTagDTO extends PanelObjectDTO {
-}
+export type PanelTagDTO = PanelObjectDTO
 
-export interface PanelSeriesDTO extends PanelObjectDTO {
-}
+export type PanelSeriesDTO = PanelObjectDTO
 
 export interface PanelFilterPresetDTO extends PanelObjectDTO {
     settings: FilterPresetSettingsDTO | null;
@@ -100,7 +91,6 @@ export interface PanelGameToSaveDTO {
 export interface PanelGameDTO extends PanelObjectDTO {
     gameId?: string | null;
     plugin?: PanelLibraryPluginDTO | null;
-    /** ISO 8601 date-time string, or `null`. */
     releaseDate?: string | null;
     sortingName?: string | null;
     series: PanelSeriesDTO[];
@@ -119,7 +109,6 @@ export interface PanelGameDTO extends PanelObjectDTO {
     tags: PanelTagDTO[];
     communityScore?: number | null;
     description?: string | null;
-    /** ISO 8601 date-time string, or `null`. */
     lastActivity?: string | null;
     playtime: number;
     playCount: number;
@@ -128,9 +117,7 @@ export interface PanelGameDTO extends PanelObjectDTO {
     manual?: string | null;
     isHidden: boolean;
     isFavorite: boolean;
-    /** ISO 8601 date-time string, or `null`. */
     added?: string | null;
-    /** ISO 8601 date-time string, or `null`. */
     modified?: string | null;
     notes?: string | null;
 

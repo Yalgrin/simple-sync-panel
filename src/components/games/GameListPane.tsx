@@ -17,7 +17,7 @@ import {List, type RowComponentProps} from "react-window";
 import {type ReactNode, useCallback, useEffect, useMemo} from "react";
 import type {GameListDTO} from "../../models/gameList.ts";
 import {useGameListStore} from "../../store/useGameListStore.ts";
-import {useLocation, useNavigate} from "react-router";
+import {useLocation, useNavigate, useParams} from "react-router";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -207,6 +207,7 @@ interface GameListRow {
 }
 
 function GameList() {
+    const {id} = useParams();
     const filterStore = useFilterStore();
     const collapsedGroups = useGameListStore((state) => state.collapsedGroups);
     const selectedGameId = useGameListStore((state) => state.selectedGameId);
@@ -214,6 +215,13 @@ function GameList() {
 
     const navigate = useNavigate();
     const {pathname} = useLocation();
+
+    useEffect(() => {
+        const idNumeric = id && Number.parseInt(id);
+        if (idNumeric && !isNaN(idNumeric)) {
+            gameListStoreAction.setSelectedGameId(idNumeric);
+        }
+    }, [id, gameListStoreAction]);
 
     const [debouncedFilter] = useDebouncedValue(filterStore, {
         wait: 300
@@ -247,10 +255,9 @@ function GameList() {
 
     const handleSelectGame = useCallback((id: number | undefined) => {
         if (id != null) {
-            gameListStoreAction.setSelectedGameId(id);
             navigate(`/games/${id}`);
         }
-    }, [gameListStoreAction, navigate]);
+    }, [navigate]);
 
     useEffect(() => {
         if (isLoading || isPlaceholderData || error || !gameList) return;

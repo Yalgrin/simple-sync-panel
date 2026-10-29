@@ -4,7 +4,6 @@ import {persist} from "zustand/middleware";
 
 export const useFilterStore = create<FilterData>()(
     persist((set) => ({
-            filterSectionEnabled: true,
             selectedFilterPresetId: null,
             useAndFilteringStyle: false,
             isInstalled: false,
@@ -78,7 +77,6 @@ export const useFilterStore = create<FilterData>()(
                         groupingOrder: GroupableField.NONE,
                     })
                 },
-                setFilterSectionEnabled: (value) => set({filterSectionEnabled: value}),
                 setSelectedFilterPresetId: (value) => set({selectedFilterPresetId: value}),
                 setFromFilterPreset: (value) => {
                     const settings = value?.settings;

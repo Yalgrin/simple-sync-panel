@@ -50,7 +50,7 @@ export async function doFetch(
         csrfResponse = undefined;
     }
 
-    const modifiedInit = init ?? {}
+    const modifiedInit: RequestInit = init ? {...init} : {};
     modifiedInit.credentials = "include";
     const headers = new Headers(modifiedInit.headers);
     if (csrfResponse?.headerName && csrfResponse?.token) {
@@ -88,7 +88,7 @@ export async function performGetRequest(
     input: RequestInfo | URL,
     init?: RequestInit,
 ) {
-    const modifiedInit = init ?? {}
+    const modifiedInit: RequestInit = init ? {...init} : {};
     modifiedInit.method = "GET";
     return doPerformRequest(queryClient, input, modifiedInit, true);
 }
@@ -98,7 +98,7 @@ export async function performPostRequest(
     input: RequestInfo | URL,
     init?: RequestInit,
 ) {
-    const modifiedInit = init ?? {}
+    const modifiedInit: RequestInit = init ? {...init} : {};
     modifiedInit.method = "POST";
     return doPerformRequest(queryClient, input, modifiedInit, true);
 }
@@ -108,7 +108,7 @@ export async function performPostJsonRequest(
     input: RequestInfo | URL,
     init?: RequestInit,
 ) {
-    const modifiedInit = init ?? {}
+    const modifiedInit: RequestInit = init ? {...init} : {};
     modifiedInit.method = "POST";
     modifiedInit.headers = {
         "Content-Type": "application/json"

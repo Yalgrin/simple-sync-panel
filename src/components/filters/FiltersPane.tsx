@@ -47,7 +47,8 @@ import {
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CloseIcon from '@mui/icons-material/Close';
-import type {PanelObjectDTO} from "../../models/objects.ts";
+import type {PanelObjectDTO, PanelPlatformDTO} from "../../models/objects.ts";
+import {MultipleObjectSelect} from "../common/inputs/MultipleObjectSelect.tsx";
 
 const NOT_SELECTED = -1;
 
@@ -428,18 +429,33 @@ function ValuesMultiSelect({options, disabled, addEmpty = true, filter, setFilte
 function PlatformSelect() {
     const {data: platforms, isLoading} = useQueryPlatforms()
 
+    const platformArr = platforms ?? [];
+
     const filter = useFilterStore((state) => state.platform);
     const filterActions = useFilterStore((state) => state.actions);
 
+    const value: PanelPlatformDTO[] = filter?.ids?.map((id) => platformArr.find((platform) => platform.playniteId === id))?.filter((platform) => platform != null) ?? []
+    const setValue = (value: PanelPlatformDTO[]) => {
+        filterActions.setPlatform({
+            ids: value
+                    .map((dto) => dto.playniteId)
+                    .filter((id) => id != null)
+                ?? [],
+            text: null
+        })
+    }
+
+    //TODO toggle between select and textfield
     return (
         <FormControl fullWidth size="small" sx={{my: "8px", marginTop: "16px"}}>
             <FormLabel>Platform</FormLabel>
-            <ObjectAutocomplete
-                options={platforms}
-                disabled={isLoading}
-                filter={filter}
-                setFilter={filterActions.setPlatform}
-            />
+            <MultipleObjectSelect value={value} setValue={setValue} options={platformArr} disabled={isLoading}/>
+            {/*<ObjectAutocomplete*/}
+            {/*    options={platforms}*/}
+            {/*    disabled={isLoading}*/}
+            {/*    filter={filter}*/}
+            {/*    setFilter={filterActions.setPlatform}*/}
+            {/*/>*/}
         </FormControl>
     );
 }
