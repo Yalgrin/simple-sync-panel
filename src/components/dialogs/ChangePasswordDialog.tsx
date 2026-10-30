@@ -111,7 +111,7 @@ export function ChangePasswordDialog({close}: Readonly<{
             </form>
         </DialogContent>
         <DialogActions>
-            <Button onClick={close}>Cancel</Button>
+            <Button onClick={close} sx={{color: 'text.primary'}}>Cancel</Button>
             <Button
                 type="submit"
                 variant="contained"

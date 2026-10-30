@@ -29,7 +29,7 @@ export function AddObjectDialog({close, callback}: Readonly<{
             />
         </DialogContent>
         <DialogActions>
-            <Button onClick={close} autoFocus sx={{color: 'text.primary'}}>Cancel</Button>
+            <Button onClick={close} sx={{color: 'text.primary'}}>Cancel</Button>
             <Button variant="contained" color="primary" onClick={handleAdd}>Add</Button>
         </DialogActions>
     </>)

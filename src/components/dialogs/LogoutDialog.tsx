@@ -20,8 +20,8 @@ export function LogoutDialog({close}: Readonly<{
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={close} autoFocus>Cancel</Button>
-            <Button onClick={handleLogout}>Logout</Button>
+            <Button onClick={close} autoFocus sx={{color: 'text.primary'}}>Cancel</Button>
+            <Button onClick={handleLogout} variant="contained" color="error">Logout</Button>
         </DialogActions>
     </>)
 }
