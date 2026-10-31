@@ -17,6 +17,8 @@ function ImageContent({src, alt, title, width, height, sx}: Readonly<ImageConten
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
+    const fontSize = width && height ? Math.min(width, height) : 32;
+
     return (
         <Box
             sx={[
@@ -51,7 +53,7 @@ function ImageContent({src, alt, title, width, height, sx}: Readonly<ImageConten
                         justifyContent: "center",
                     }}
                 >
-                    <CloseIcon sx={{fontSize: 48}}/>
+                    <CloseIcon sx={{fontSize: fontSize}}/>
                 </Box>
             )}
 

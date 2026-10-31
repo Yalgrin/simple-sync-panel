@@ -1,4 +1,4 @@
-import {Alert, Button, DialogActions, DialogContent, TextField} from "@mui/material";
+import {Alert, Box, Button, DialogActions, DialogContent, TextField} from "@mui/material";
 import * as React from "react";
 import {useState} from "react";
 import {useChangePassword} from "../../hooks/auth.ts";
@@ -69,7 +69,18 @@ export function ChangePasswordDialog({close}: Readonly<{
                     Failed to change password. Check your credentials and try again.
                 </Alert>
             )}
-            <form onSubmit={handleSubmit} id="change-password-form">
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                id="change-password-form"
+                sx={{
+                    '& .MuiInputBase-input:autofill': {
+                        WebkitBoxShadow:
+                            '0 0 0 100px var(--dialog-surface) inset',
+                        WebkitTextFillColor: (theme) => theme.palette.text.primary,
+                    },
+                }}
+            >
                 <TextField
                     autoFocus
                     required
@@ -108,7 +119,7 @@ export function ChangePasswordDialog({close}: Readonly<{
                     variant="standard"
                     color={repeatedNewPasswordError ? 'error' : 'primary'}
                 />
-            </form>
+            </Box>
         </DialogContent>
         <DialogActions>
             <Button onClick={close} sx={{color: 'text.primary'}}>Cancel</Button>

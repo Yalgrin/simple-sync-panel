@@ -8,10 +8,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import type {SelectOption} from "../../../models/inputs/SelectOption.ts";
 
 export interface MultipleSearchSelectProps {
-    value: SelectOption[];
-    setValue: (value: SelectOption[]) => void;
-    options: SelectOption[];
-    setOptions?: (options: SelectOption[]) => void;
+    value: SelectOption<string>[];
+    setValue: (value: SelectOption<string>[]) => void;
+    options: SelectOption<string>[];
+    setOptions?: (options: SelectOption<string>[]) => void;
     allowAdd?: boolean;
     disabled?: boolean;
 }
@@ -45,7 +45,7 @@ export function MultipleSearchSelect({
             : filtered;
     }, [options, onlySelected, selectedIds, searchText]);
 
-    const toggleOption = (option: SelectOption) => {
+    const toggleOption = (option: SelectOption<string>) => {
         setValue(
             selectedIds.has(option.id)
                 ? value.filter((selected) => selected.id !== option.id)
@@ -56,7 +56,7 @@ export function MultipleSearchSelect({
     const addOption = (name: string) => {
         const option = options.find((option) => option.name === name);
         if (!option) {
-            const newOption = {id: "new-" + crypto.randomUUID(), name: name} as SelectOption;
+            const newOption = {id: "new-" + crypto.randomUUID(), name: name} as SelectOption<string>;
             setOptions([...options, newOption]);
             toggleOption(newOption);
         } else {
@@ -85,9 +85,9 @@ export function MultipleSearchSelect({
                            onToggle,
                            ariaAttributes,
                        }: RowComponentProps<{
-        items: SelectOption[];
+        items: SelectOption<string>[];
         selected: Set<string>;
-        onToggle: (option: SelectOption) => void;
+        onToggle: (option: SelectOption<string>) => void;
     }>) {
         const option = items[index];
 
@@ -215,7 +215,6 @@ export function MultipleSearchSelect({
                     <TextField
                         size="small"
                         fullWidth
-                        autoFocus
                         placeholder="Search..."
                         value={searchText}
                         disabled={disabled}

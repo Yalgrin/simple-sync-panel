@@ -5,12 +5,13 @@ import {List, type RowComponentProps} from "react-window";
 import {Box, Button, IconButton, Popover, TextField, Typography} from "@mui/material";
 import type {SelectOption} from "../../../models/inputs/SelectOption.ts";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 
 export interface SingleSearchSelectProps {
-    value: SelectOption | undefined | null;
-    setValue: (value: SelectOption | null) => void;
-    options: SelectOption[];
-    setOptions?: (options: SelectOption[]) => void;
+    value: SelectOption<string> | undefined | null;
+    setValue: (value: SelectOption<string> | null) => void;
+    options: SelectOption<string>[];
+    setOptions?: (options: SelectOption<string>[]) => void;
     allowAdd?: boolean;
     disabled?: boolean;
 }
@@ -22,18 +23,14 @@ export function SingleSearchSelect({
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [searchText, setSearchText] = useState("");
 
-    const optionsWithEmpty = useMemo(() => {
-        return [{name: "(None)"} as SelectOption, ...options];
-    }, [options]);
-
     const filteredOptions = useMemo(() => {
         const query = searchText.trim().toLowerCase();
         return query
-            ? optionsWithEmpty.filter((option) => (option.name ?? "").toLowerCase().includes(query))
-            : optionsWithEmpty;
-    }, [optionsWithEmpty, searchText]);
+            ? options.filter((option) => (option.name ?? "").toLowerCase().includes(query))
+            : options;
+    }, [options, searchText]);
 
-    const setOption = (option: SelectOption | null) => {
+    const setOption = (option: SelectOption<string> | null) => {
         setAnchorEl(null);
         setSearchText("");
         setValue(option);
@@ -42,7 +39,7 @@ export function SingleSearchSelect({
     const addOption = (name: string) => {
         const option = options.find((option) => option.name === name);
         if (!option) {
-            const newOption = {id: crypto.randomUUID(), name: name} as SelectOption;
+            const newOption = {id: crypto.randomUUID(), name: name} as SelectOption<string>;
             let newOptionList = [...options, newOption];
             newOptionList = newOptionList.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
             setOptions(newOptionList);
@@ -70,8 +67,8 @@ export function SingleSearchSelect({
                            onSelect,
                            ariaAttributes,
                        }: RowComponentProps<{
-        items: SelectOption[];
-        onSelect: (option: SelectOption | null) => void;
+        items: SelectOption<string>[];
+        onSelect: (option: SelectOption<string> | null) => void;
     }>) {
         const option = items[index];
 
@@ -108,34 +105,50 @@ export function SingleSearchSelect({
             gap: "6px",
             alignItems: "center",
         }}>
-            <Button
-                variant="outlined"
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                disabled={disabled}
-                sx={{
-                    justifyContent: "flex-start",
-                    textTransform: "none",
-                    minWidth: 0,
-                    overflow: "hidden",
-                    height: "40px",
-                    maxHeight: "40px",
-                    color: "text.primary",
-                    borderColor: (theme) =>
-                        theme.palette.mode === "dark"
-                            ? "rgba(255, 255, 255, 0.23)"
-                            : "rgba(0, 0, 0, 0.23)",
-                    "&:hover": {
-                        borderColor: "text.primary",
-                    },
-                    "&:focus-visible": {
-                        borderColor: "primary.main",
-                    },
-                }}
-            >
-                <Typography noWrap>
-                    {value?.name ?? ""}
-                </Typography>
-            </Button>
+            <Box sx={{position: "relative", minWidth: 0}}>
+                <Button
+                    variant="outlined"
+                    onClick={(event) => setAnchorEl(event.currentTarget)}
+                    disabled={disabled}
+                    sx={{
+                        justifyContent: "flex-start",
+                        textTransform: "none",
+                        minWidth: 0,
+                        width: "100%",
+                        overflow: "hidden",
+                        height: "40px",
+                        maxHeight: "40px",
+                        color: "text.primary",
+                        borderColor: (theme) =>
+                            theme.palette.mode === "dark"
+                                ? "rgba(255, 255, 255, 0.23)"
+                                : "rgba(0, 0, 0, 0.23)",
+                        "&:hover": {
+                            borderColor: "text.primary",
+                        },
+                        "&:focus-visible": {
+                            borderColor: "primary.main",
+                        },
+                    }}
+                >
+                    <Typography noWrap>
+                        {value?.name ?? ""}
+                    </Typography>
+                </Button>
+                <IconButton
+                    size="small"
+                    onClick={() => setValue(null)}
+                    sx={{
+                        position: "absolute",
+                        right: 4,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                    }}
+                    disabled={disabled || !value}
+                >
+                    <CloseIcon fontSize="small"/>
+                </IconButton>
+            </Box>
 
             {allowAdd && (
                 <IconButton
@@ -170,7 +183,6 @@ export function SingleSearchSelect({
                     <TextField
                         size="small"
                         fullWidth
-                        autoFocus
                         placeholder="Search..."
                         disabled={disabled}
                         value={searchText}

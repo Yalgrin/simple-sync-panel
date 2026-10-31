@@ -126,6 +126,11 @@ export function LoginPage() {
                         flexDirection: 'column',
                         width: '100%',
                         gap: 2,
+                        '& .MuiInputBase-input:autofill': {
+                            WebkitBoxShadow: (theme) =>
+                                `0 0 0 100px ${theme.palette.background.paper} inset`,
+                            WebkitTextFillColor: (theme) => theme.palette.text.primary,
+                        },
                     }}
                 >
                     <FormControl>

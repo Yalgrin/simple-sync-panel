@@ -1,11 +1,9 @@
-import {Box, type SxProps, type Theme} from "@mui/material";
-import type {ReactNode} from "react";
+import {Box} from "@mui/material";
 import {DEFAULT_LABEL_WIDTH} from "../../../constants/form-controls.ts";
+import type {BaseProps} from "../BaseProps.ts";
 
-export interface BaseControlProps {
+export interface BaseControlProps extends BaseProps {
     labelWidth?: string;
-    sx?: SxProps<Theme>;
-    children?: ReactNode;
 }
 
 export function BaseControl({

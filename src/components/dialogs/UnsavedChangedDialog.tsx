@@ -6,6 +6,18 @@ export function UnsavedChangedDialog({blocker}: Readonly<{ blocker: Blocker }>) 
         <Dialog
             open={blocker.state === "blocked"}
             onClose={() => blocker.state === "blocked" && blocker.reset()}
+            slotProps={{
+                paper: {
+                    sx: {
+                        '--dialog-surface': (theme) =>
+                            theme.palette.mode === 'dark'
+                                ? theme.palette.grey[800]
+                                : theme.palette.background.paper,
+                        bgcolor: 'var(--dialog-surface)',
+                        backgroundImage: 'none',
+                    },
+                },
+            }}
         >
             <DialogTitle>Discard unsaved changes?</DialogTitle>
             <DialogContent>

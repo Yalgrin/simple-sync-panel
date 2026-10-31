@@ -26,7 +26,7 @@ export function MultipleObjectSelect<T extends PanelObjectDTO>({
     const {selectedOptions, availableOptions, objectsById} = useMemo(() => {
         const objectsById = new Map<string, T>();
 
-        const toOption = (object: T): SelectOption => {
+        const toOption = (object: T): SelectOption<string> => {
             const id = object.playniteId != null
                 ? `id-${object.playniteId}`
                 : `unsaved-${object.name ?? ""}`;
@@ -41,7 +41,7 @@ export function MultipleObjectSelect<T extends PanelObjectDTO>({
         return {selectedOptions, availableOptions, objectsById};
     }, [options, value]);
 
-    const toObject = (option: SelectOption): T => {
+    const toObject = (option: SelectOption<string>): T => {
         const existing = objectsById.get(option.id) ?? newlyCreated.current.get(option.id);
         if (existing) return existing;
 

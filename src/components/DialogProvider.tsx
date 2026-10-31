@@ -22,7 +22,22 @@ export function DialogProvider({children}: Readonly<{ children: ReactNode }>) {
     return (
         <DialogContext.Provider value={contextValue}>
             {children}
-            <Dialog open={dialog !== null} onClose={closeDialog}>
+            <Dialog
+                open={dialog !== null}
+                onClose={closeDialog}
+                slotProps={{
+                    paper: {
+                        sx: {
+                            '--dialog-surface': (theme) =>
+                                theme.palette.mode === 'dark'
+                                    ? theme.palette.grey[800]
+                                    : theme.palette.background.paper,
+                            bgcolor: 'var(--dialog-surface)',
+                            backgroundImage: 'none',
+                        },
+                    },
+                }}
+            >
                 {dialog && (
                     <>
                         <DialogTitle>{dialog.title}</DialogTitle>

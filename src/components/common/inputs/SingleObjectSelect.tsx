@@ -26,7 +26,7 @@ export function SingleObjectSelect<T extends PanelObjectDTO>({
     const {selectedOption, availableOptions, objectsById} = useMemo(() => {
         const objectsById = new Map<string, T>();
 
-        const toOption = (object: T): SelectOption => {
+        const toOption = (object: T): SelectOption<string> => {
             const id = object.playniteId != null
                 ? `id-${object.playniteId}`
                 : `unsaved-${object.name ?? ""}`;
@@ -35,7 +35,7 @@ export function SingleObjectSelect<T extends PanelObjectDTO>({
             return {id, name: object.name ?? ""};
         };
 
-        const toOptionNullable = (object: T | undefined | null): SelectOption | null => {
+        const toOptionNullable = (object: T | undefined | null): SelectOption<string> | null => {
             if (object == null) {
                 return null;
             }
@@ -48,7 +48,7 @@ export function SingleObjectSelect<T extends PanelObjectDTO>({
         return {selectedOption, availableOptions, objectsById};
     }, [options, value]);
 
-    const toObject = (option: SelectOption): T => {
+    const toObject = (option: SelectOption<string>): T => {
         const existing = objectsById.get(option.id) ?? newlyCreated.current.get(option.id);
         if (existing) return existing;
 
@@ -57,7 +57,7 @@ export function SingleObjectSelect<T extends PanelObjectDTO>({
         return created;
     };
 
-    const toObjectNullable = (option: SelectOption | undefined | null): T | null => {
+    const toObjectNullable = (option: SelectOption<string> | undefined | null): T | null => {
         if (option == null) {
             return null;
         }
