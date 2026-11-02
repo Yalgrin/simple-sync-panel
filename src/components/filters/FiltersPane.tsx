@@ -37,6 +37,7 @@ import {FilterPresetSelect} from "./inputs/FilterPresetSelect.tsx";
 import {SortOrderSelect} from "./inputs/SortOrderSelect.tsx";
 import {SortOrderDirectionSelect} from "./inputs/SortOrderDirectionSelect.tsx";
 
+//TODO add ability to save filter presets
 export function FiltersPane() {
     const filterActions = useFilterStore((state) => state.actions);
 

@@ -111,7 +111,7 @@ function GameEditForm({
 
     useEffect(() => {
         if (savedDestination !== null) {
-            navigate(savedDestination);
+            void navigate(savedDestination);
         }
     }, [savedDestination, navigate]);
 

@@ -1,5 +1,5 @@
 import {Typography} from "@mui/material";
-import {formatPlaytime} from "../../../functions/util.ts";
+import {formatPlaytime, mergeStyles} from "../../../functions/util.ts";
 import {DEFAULT_LABEL_WIDTH} from "../../../constants/form-controls.ts";
 import {NumericControl, type NumericControlProps} from "./NumericControl.tsx";
 
@@ -15,12 +15,13 @@ export function TimePlayedControl({
                                       children
                                   }: Readonly<TimePlayedControlProps>) {
     return (
-        <NumericControl name={name} value={value} setValue={setValue} disabled={disabled} labelWidth={labelWidth} sx={[
-            {
-                gridTemplateColumns: `${labelWidth} minmax(0, 1fr) max-content`,
-            },
-            ...(Array.isArray(sx) ? sx : sx == null ? [] : [sx]),
-        ]}>
+        <NumericControl name={name} value={value} setValue={setValue} disabled={disabled} labelWidth={labelWidth}
+                        sx={mergeStyles(
+                            {
+                                gridTemplateColumns: `${labelWidth} minmax(0, 1fr) max-content`,
+                            },
+                            sx
+                        )}>
             <Typography>{formatPlaytime(value)}</Typography>
             {children}
         </NumericControl>

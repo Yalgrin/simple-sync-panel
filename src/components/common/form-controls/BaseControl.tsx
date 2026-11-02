@@ -1,6 +1,7 @@
 import {Box} from "@mui/material";
 import {DEFAULT_LABEL_WIDTH} from "../../../constants/form-controls.ts";
 import type {BaseProps} from "../BaseProps.ts";
+import {mergeStyles} from "../../../functions/util.ts";
 
 export interface BaseControlProps extends BaseProps {
     labelWidth?: string;
@@ -12,15 +13,13 @@ export function BaseControl({
                                 children = undefined
                             }: Readonly<BaseControlProps>) {
     return (
-        <Box sx={[
+        <Box sx={mergeStyles(
             {
                 display: "grid",
                 gridTemplateColumns: `${labelWidth} minmax(0, 1fr)`,
                 gap: "6px",
                 alignItems: "center",
-            },
-            ...(Array.isArray(sx) ? sx : sx == null ? [] : [sx]),
-        ]}>
+            }, sx)}>
             {children}
         </Box>
     )

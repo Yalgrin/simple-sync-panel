@@ -16,6 +16,47 @@ export interface MultipleSearchSelectProps {
     disabled?: boolean;
 }
 
+function OptionRow({
+                       index,
+                       style,
+                       items,
+                       selected,
+                       onToggle,
+                       ariaAttributes,
+                   }: RowComponentProps<{
+    items: SelectOption<string>[];
+    selected: Set<string>;
+    onToggle: (option: SelectOption<string>) => void;
+}>) {
+    const option = items[index];
+
+    return (
+        <Box style={style} {...ariaAttributes}>
+            <Box
+                component="button"
+                type="button"
+                onClick={() => onToggle(option)}
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    px: 1,
+                    border: 0,
+                    bgcolor: "transparent",
+                    color: "text.primary",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    "&:hover": {bgcolor: "action.hover"},
+                }}
+            >
+                <Checkbox checked={selected.has(option.id)} tabIndex={-1}/>
+                <Typography noWrap>{option.name ?? ""}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
 export function MultipleSearchSelect({
                                          value,
                                          setValue,
@@ -59,10 +100,8 @@ export function MultipleSearchSelect({
             const newOption = {id: "new-" + crypto.randomUUID(), name: name} as SelectOption<string>;
             setOptions([...options, newOption]);
             toggleOption(newOption);
-        } else {
-            if (!selectedIds.has(option.id)) {
-                toggleOption(option);
-            }
+        } else if (!selectedIds.has(option.id)) {
+            toggleOption(option);
         }
     }
 
@@ -75,47 +114,6 @@ export function MultipleSearchSelect({
                 return <AddObjectDialog close={close} callback={addOption}/>;
             },
         });
-    }
-
-    function OptionRow({
-                           index,
-                           style,
-                           items,
-                           selected,
-                           onToggle,
-                           ariaAttributes,
-                       }: RowComponentProps<{
-        items: SelectOption<string>[];
-        selected: Set<string>;
-        onToggle: (option: SelectOption<string>) => void;
-    }>) {
-        const option = items[index];
-
-        return (
-            <Box style={style} {...ariaAttributes}>
-                <Box
-                    component="button"
-                    type="button"
-                    onClick={() => onToggle(option)}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: "100%",
-                        height: "100%",
-                        px: 1,
-                        border: 0,
-                        bgcolor: "transparent",
-                        color: "text.primary",
-                        textAlign: "left",
-                        cursor: "pointer",
-                        "&:hover": {bgcolor: "action.hover"},
-                    }}
-                >
-                    <Checkbox checked={selected.has(option.id)} tabIndex={-1}/>
-                    <Typography noWrap>{option.name ?? ""}</Typography>
-                </Box>
-            </Box>
-        );
     }
 
     return (

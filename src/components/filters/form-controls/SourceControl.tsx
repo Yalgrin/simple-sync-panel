@@ -1,10 +1,10 @@
 import type {PanelSourceDTO} from "../../../models/objects.ts";
-import {useQuerySeries} from "../../../hooks/objects.ts";
+import {useQuerySources} from "../../../hooks/objects.ts";
 import {BaseFilterControl} from "./BaseFilterControl.tsx";
 import {ToggleableFilterSelect} from "../inputs/ToggleableFilterSelect.tsx";
 
 export function SourceControl() {
-    const {data: options, isLoading, error} = useQuerySeries()
+    const {data: options, isLoading, error} = useQuerySources()
 
     return (
         <BaseFilterControl name="Source">

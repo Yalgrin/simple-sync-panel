@@ -110,19 +110,21 @@ export function useSseSession(): SessionState {
                     }
                 }
 
-                if (changedTypeKeys && changedTypeKeys.length > 0) {
-                    for (const key of changedTypeKeys) {
-                        await queryClient.invalidateQueries(
-                            {
-                                queryKey: key,
-                                refetchType: 'active'
-                            },
-                            {
-                                cancelRefetch: true,
-                                throwOnError: true
-                            }
-                        );
-                    }
+                if (changedTypeKeys?.length) {
+                    await Promise.all(
+                        changedTypeKeys.map((key) =>
+                            queryClient.invalidateQueries(
+                                {
+                                    queryKey: key,
+                                    refetchType: 'active'
+                                },
+                                {
+                                    cancelRefetch: true,
+                                    throwOnError: true
+                                }
+                            )
+                        )
+                    );
                 }
             } catch (e) {
                 console.error(e);

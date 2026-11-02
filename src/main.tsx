@@ -13,6 +13,7 @@ import {GameAddEditPane} from "./components/games/GameAddEditPane.tsx";
 import {LocalizationProvider} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {localeConfig} from "./localeInitialization.ts"
+import {LibraryListPane} from "./components/library/LibraryListPane.tsx";
 
 //TODO localization
 //TODO error handling, 404 etc
@@ -54,7 +55,21 @@ const router = createBrowserRouter([
             },
             {
                 path: "/library",
-                Component: LibraryPage
+                Component: LibraryPage,
+                children: [
+                    {
+                        index: true,
+                        Component: LibraryListPane
+                    },
+                    {
+                        path: ":type",
+                        Component: LibraryListPane
+                    },
+                    {
+                        path: ":type/:id",
+                        Component: LibraryListPane
+                    }
+                ]
             }
         ]
     }

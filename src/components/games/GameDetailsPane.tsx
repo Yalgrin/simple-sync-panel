@@ -7,13 +7,13 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import {formatInstallSize, formatLocalDate, formatPlaytime} from "../../functions/util.ts";
 import ResizableFrame from "../ResizableFrame.tsx";
 import * as React from "react";
-import IconImage from "../common/IconImage.tsx";
-import ImageWithSpinner from "../common/ImageWithSpinner.tsx";
+import {IconImage} from "../common/IconImage.tsx";
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import {useDialog} from "../../hooks/useDialog.ts";
 import {DeleteGameDialog} from "../dialogs/DeleteGameDialog.tsx";
 import type {PanelGameDTO} from "../../models/objects.ts";
+import {OptionalImage} from "../common/OptionalImage.tsx";
 
 interface StatCardProps {
     visible: boolean;
@@ -126,7 +126,6 @@ export function GameDetailsPane() {
         return null;
     }
 
-    //TODO placeholder image
     //TODO border
     return (
         <Box
@@ -161,9 +160,10 @@ export function GameDetailsPane() {
                             boxShadow: '0 12px 32px rgba(0,0,0,0.5)'
                         }}
                     >
-                        <ImageWithSpinner
+                        <OptionalImage
                             src={gameDetails?.id && gameDetails.coverImageUrl || ''}
                             alt="Cover"
+                            closeIconSize={48}
                             width={250}
                             height={375}
                         />
@@ -182,7 +182,7 @@ export function GameDetailsPane() {
                         >
                             {gameDetails?.name}
                             <IconImage
-                                src={gameDetails?.plugin?.id && gameDetails.plugin.iconUrl || "/applogo_dark.png"}
+                                src={gameDetails?.plugin?.iconUrl}
                                 alt={gameDetails?.plugin?.name || 'Playnite'}
                                 title={gameDetails?.plugin?.name || 'Playnite'}
                                 sx={{
@@ -204,8 +204,8 @@ export function GameDetailsPane() {
                                 variant="contained"
                                 color="primary"
                                 startIcon={<EditRoundedIcon/>}
-                                onClick={() => {
-                                    navigate(`/games/edit/${gameDetails?.id}`)
+                                onClick={async () => {
+                                    await navigate(`/games/edit/${gameDetails?.id}`)
                                 }}
                                 sx={{
                                     px: 3,

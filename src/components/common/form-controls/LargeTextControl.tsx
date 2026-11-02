@@ -1,5 +1,6 @@
 import {TextControl, type TextControlProps} from "./TextControl.tsx";
 import {DEFAULT_LABEL_WIDTH} from "../../../constants/form-controls.ts";
+import {mergeStyles} from "../../../functions/util.ts";
 
 export type LargeTextControlProps = TextControlProps;
 
@@ -24,12 +25,12 @@ export function LargeTextControl({
             multiline={multiline}
             minRows={minRows}
             maxRows={maxRows}
-            sx={[
+            sx={mergeStyles(
                 {
                     gridColumn: "1 / -1",
                 },
-                ...(Array.isArray(sx) ? sx : sx == null ? [] : [sx]),
-            ]}
+                sx
+            )}
         />
     )
 }

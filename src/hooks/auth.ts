@@ -47,10 +47,10 @@ export function useLogout() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: () => logout(queryClient),
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: AUTH_GROUP_QUERY_KEY});
-            await queryClient.invalidateQueries({queryKey: ALL_LIBRARY_OBJECTS_QUERY_KEY});
-            await queryClient.invalidateQueries({queryKey: GAME_GLOBAL_QUERY_KEY});
+        onSuccess: () => {
+            queryClient.removeQueries({queryKey: AUTH_GROUP_QUERY_KEY});
+            queryClient.removeQueries({queryKey: ALL_LIBRARY_OBJECTS_QUERY_KEY});
+            queryClient.removeQueries({queryKey: GAME_GLOBAL_QUERY_KEY});
         },
     })
 }

@@ -31,7 +31,7 @@ export function LinksTab({
         setRows(nextRows);
     };
 
-    return <>
+    return (
         <Stack sx={{
             gridColumn: "1 / -1",
         }}>
@@ -87,5 +87,5 @@ export function LinksTab({
                 </Box>
             ))}
         </Stack>
-    </>;
+    );
 }

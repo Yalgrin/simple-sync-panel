@@ -1,3 +1,5 @@
+import type {SxProps, Theme} from "@mui/material";
+
 export function formatLocalDate(dateStr: string | undefined | null): string {
     if (!dateStr) {
         return "Never";
@@ -51,4 +53,21 @@ export function formatInstallSize(installSize: number | undefined | null): strin
     }
 
     return `${unitIndex === 0 ? size : size.toFixed(3)} ${units[unitIndex]}`;
+}
+
+function styleToArray(sx: SxProps<Theme> | undefined | null) {
+    if (sx == null) {
+        return [];
+    }
+    if (Array.isArray(sx)) {
+        return sx;
+    }
+    return [sx];
+}
+
+export function mergeStyles(first: SxProps<Theme> | undefined | null, second: SxProps<Theme> | undefined | null): SxProps<Theme> {
+    return [
+        ...styleToArray(first),
+        ...styleToArray(second)
+    ]
 }

@@ -9,11 +9,19 @@ export const useSessionState = create<SessionState>((set) => ({
     error: false,
     connected: false,
     actions: {
-        reset: () => set({sessionId: undefined, active: false, loading: false, error: false, connected: false}),
+        reset: () => set({
+            sessionId: undefined,
+            serverVersion: undefined,
+            active: false,
+            loading: false,
+            error: false,
+            connected: false
+        }),
         markAsConnecting: () => set({active: true, loading: true, connected: false, error: false}),
         markAsConnected: () => set({active: true, loading: false, connected: true, error: false}),
         markAsConnectionError: () => set({
             sessionId: undefined,
+            serverVersion: undefined,
             active: true,
             loading: false,
             connected: false,

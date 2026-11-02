@@ -23,7 +23,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import {formatLocalDate, formatPlaytime} from "../../functions/util.ts";
-import IconImage from "../common/IconImage.tsx";
+import {IconImage} from "../common/IconImage.tsx";
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import {
     translateInstallSizeName,
@@ -92,7 +92,7 @@ function GameRow({
     function getIconUrl(): string | undefined {
         if (!game) return undefined;
         if (game.id && game.hasIcon && game.iconUrl) return game.iconUrl;
-        if (game.plugin?.hasIcon && game.plugin.iconUrl) return game.plugin.iconUrl;
+        if (game.plugin?.iconUrl) return game.plugin.iconUrl;
         return undefined;
     }
 
@@ -218,7 +218,7 @@ function GameList() {
 
     useEffect(() => {
         const idNumeric = id && Number.parseInt(id);
-        if (idNumeric && !isNaN(idNumeric)) {
+        if (idNumeric && !Number.isNaN(idNumeric)) {
             gameListStoreAction.setSelectedGameId(idNumeric);
         }
     }, [id, gameListStoreAction]);
@@ -253,9 +253,9 @@ function GameList() {
         return result;
     }, [gameList, collapsedGroups]);
 
-    const handleSelectGame = useCallback((id: number | undefined) => {
+    const handleSelectGame = useCallback(async (id: number | undefined) => {
         if (id != null) {
-            navigate(`/games/${id}`);
+            await navigate(`/games/${id}`);
         }
     }, [navigate]);
 
@@ -273,9 +273,9 @@ function GameList() {
             visibleGames.length > 0 &&
             (!selectedGameId || !visibleGames.some((row) => row.game.id === selectedGameId))
         ) {
-            handleSelectGame(visibleGames[0].game.id);
+            void handleSelectGame(visibleGames[0].game.id);
         } else if (selectedGameId) {
-            handleSelectGame(selectedGameId);
+            void handleSelectGame(selectedGameId);
         }
     }, [isLoading, isPlaceholderData, error, gameList, rows, selectedGameId, handleSelectGame, pathname]);
 

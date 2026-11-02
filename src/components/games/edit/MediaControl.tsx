@@ -1,7 +1,9 @@
 import {type ChangeEvent, type ReactNode, useEffect, useState} from "react";
 import {Box, Button, Divider, Paper, Stack, Typography} from "@mui/material";
+import type {BaseProps} from "../../common/BaseProps.ts";
+import {mergeStyles} from "../../../functions/util.ts";
 
-export interface MediaFieldProps {
+export interface MediaFieldProps extends BaseProps {
     name: string;
     wideInput?: boolean;
     initialUrl: string | undefined;
@@ -9,6 +11,10 @@ export interface MediaFieldProps {
     setIsSaving: (value: boolean) => void;
     file: File | null;
     setFile: (value: File | null) => void;
+    minImageWidth?: string;
+    minImageHeight?: string;
+    maxImageWidth?: string;
+    maxImageHeight?: string;
 }
 
 export function MediaControl({
@@ -18,7 +24,12 @@ export function MediaControl({
                                  isSaving,
                                  setIsSaving,
                                  file,
-                                 setFile
+                                 setFile,
+                                 minImageWidth = "128px",
+                                 minImageHeight = "128px",
+                                 maxImageWidth = "100%",
+                                 maxImageHeight = "100%",
+                                 sx
                              }: Readonly<MediaFieldProps>) {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -37,7 +48,7 @@ export function MediaControl({
 
     const handleImageChange = function (event: ChangeEvent<HTMLInputElement>) {
         const selectedFile = event.currentTarget.files?.[0];
-        if (selectedFile && selectedFile.type.startsWith("image/")) {
+        if (selectedFile?.type.startsWith("image/")) {
             setFile(selectedFile);
             setIsSaving(true);
         }
@@ -61,46 +72,48 @@ export function MediaControl({
                 <Box component="img" src={previewUrl} alt="Preview"
                      sx={{
                          display: "block",
-                         maxWidth: "100%",
-                         maxHeight: "100%",
-                         minWidth: "128px",
-                         minHeight: "128px",
+                         maxWidth: maxImageWidth,
+                         maxHeight: maxImageHeight,
+                         minWidth: minImageWidth,
+                         minHeight: minImageHeight,
                          objectFit: "contain"
                      }}/>
             )
-        } else {
-            if (initialUrl) {
-                previewElement = (<Typography>Existing image will be removed</Typography>)
-            } else {
-                previewElement = (<Typography>No image</Typography>)
-            }
-        }
-    } else {
-        if (initialUrl) {
-            previewElement = (
-                <Box component="img" src={initialUrl} alt="Preview"
-                     sx={{
-                         display: "block",
-                         maxWidth: "100%",
-                         maxHeight: "100%",
-                         minWidth: "128px",
-                         minHeight: "128px",
-                         objectFit: "contain"
-                     }}/>
-            )
+        } else if (initialUrl) {
+            previewElement = (<Typography>Existing image will be removed</Typography>)
         } else {
             previewElement = (<Typography>No image</Typography>)
         }
+    } else if (initialUrl) {
+        previewElement = (
+            <Box component="img" src={initialUrl} alt="Preview"
+                 sx={{
+                     display: "block",
+                     maxWidth: maxImageWidth,
+                     maxHeight: maxImageHeight,
+                     minWidth: minImageWidth,
+                     minHeight: minImageHeight,
+                     objectFit: "contain"
+                 }}/>
+        )
+    } else {
+        previewElement = (<Typography>No image</Typography>)
     }
 
+
     return (
-        <Stack direction="column" sx={{
-            gridColumn: wideInput ? "1 / -1" : undefined,
-            gap: "6px",
-            minWidth: 0,
-            minHeight: 0,
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-        }}>
+        <Stack direction="column"
+               sx={mergeStyles(
+                   {
+                       gridColumn: wideInput ? "1 / -1" : undefined,
+                       gap: "6px",
+                       minWidth: 0,
+                       minHeight: 0,
+                       border: "1px solid rgba(255, 255, 255, 0.08)",
+                   },
+                   sx
+               )}
+        >
             <Paper>
                 <Typography variant="h6" sx={{
                     padding: "8px",
@@ -111,7 +124,7 @@ export function MediaControl({
                 gap: "8px",
             }}>
                 <Button variant="contained" component="label">
-                    Add
+                    Add{' '}
                     <input
                         type="file"
                         accept="image/*"

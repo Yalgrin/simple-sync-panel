@@ -7,6 +7,44 @@ import type {SelectOption} from "../../../models/inputs/SelectOption.ts";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
+function OptionRow({
+                       index,
+                       style,
+                       items,
+                       onSelect,
+                       ariaAttributes,
+                   }: RowComponentProps<{
+    items: SelectOption<string>[];
+    onSelect: (option: SelectOption<string> | null) => void;
+}>) {
+    const option = items[index];
+
+    return (
+        <Box style={style} {...ariaAttributes}>
+            <Box
+                component="button"
+                type="button"
+                onClick={() => onSelect(option)}
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    px: 1,
+                    border: 0,
+                    bgcolor: "transparent",
+                    color: "text.primary",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    "&:hover": {bgcolor: "action.hover"},
+                }}
+            >
+                <Typography noWrap>{option.name ?? ""}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
 export interface SingleSearchSelectProps {
     value: SelectOption<string> | undefined | null;
     setValue: (value: SelectOption<string> | null) => void;
@@ -58,44 +96,6 @@ export function SingleSearchSelect({
                 return <AddObjectDialog close={close} callback={addOption}/>;
             },
         });
-    }
-
-    function OptionRow({
-                           index,
-                           style,
-                           items,
-                           onSelect,
-                           ariaAttributes,
-                       }: RowComponentProps<{
-        items: SelectOption<string>[];
-        onSelect: (option: SelectOption<string> | null) => void;
-    }>) {
-        const option = items[index];
-
-        return (
-            <Box style={style} {...ariaAttributes}>
-                <Box
-                    component="button"
-                    type="button"
-                    onClick={() => onSelect(option)}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        width: "100%",
-                        height: "100%",
-                        px: 1,
-                        border: 0,
-                        bgcolor: "transparent",
-                        color: "text.primary",
-                        textAlign: "left",
-                        cursor: "pointer",
-                        "&:hover": {bgcolor: "action.hover"},
-                    }}
-                >
-                    <Typography noWrap>{option.name ?? ""}</Typography>
-                </Box>
-            </Box>
-        );
     }
 
     return (

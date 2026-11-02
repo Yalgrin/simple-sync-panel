@@ -2,18 +2,19 @@ import {Checkbox, FormControlLabel} from "@mui/material";
 import {useFilterStore} from "../../../store/useFilterStore.ts";
 import type {BaseProps} from "../../common/BaseProps.ts";
 import {BaseFilterControl} from "./BaseFilterControl.tsx";
+import {mergeStyles} from "../../../functions/util.ts";
 
 export function UseAndFilteringStyleControl({sx, children}: Readonly<BaseProps>) {
     const useAndFilteringStyle = useFilterStore((state) => state.useAndFilteringStyle);
     const filterActions = useFilterStore((state) => state.actions);
 
     return (
-        <BaseFilterControl sx={[
+        <BaseFilterControl sx={mergeStyles(
             {
                 my: "0",
             },
-            ...(Array.isArray(sx) ? sx : sx == null ? [] : [sx]),
-        ]}>
+            sx
+        )}>
             <FormControlLabel
                 control={<Checkbox checked={useAndFilteringStyle ?? false}
                                    onChange={(event) => filterActions.setUseAndFilteringStyle(event.target.checked)}/>}

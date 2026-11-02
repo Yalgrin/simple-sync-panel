@@ -13,6 +13,7 @@ export function CheckboxControl({
                                     name,
                                     value,
                                     setValue,
+                                    disabled,
                                     labelWidth = DEFAULT_LABEL_WIDTH,
                                     sx,
                                     children
@@ -25,6 +26,7 @@ export function CheckboxControl({
                 sx={{justifySelf: "start"}}
                 checked={value ?? false}
                 onChange={(event) => setValue(event.target.checked)}
+                disabled={disabled}
             />
             {children}
         </BaseControl>

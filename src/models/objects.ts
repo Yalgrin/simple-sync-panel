@@ -8,9 +8,11 @@ export const RELEASE_YEAR_QUERY_KEY = ["game", "release-years"] as const;
 export const ALL_LIBRARY_OBJECTS_QUERY_KEY = ["library"] as const;
 export const LIBRARY_PLUGIN_QUERY_KEY = ["library", "library-plugin"] as const;
 export const PLATFORM_QUERY_KEY = ["library", "platform"] as const;
+export const PLATFORM_SPECIFICATION_QUERY_KEY = ["library", "platform", "specification"] as const;
 export const AGE_RATING_QUERY_KEY = ["library", "age-rating"] as const;
 export const GENRE_QUERY_KEY = ["library", "genre"] as const;
 export const REGION_QUERY_KEY = ["library", "region"] as const;
+export const REGION_SPECIFICATION_QUERY_KEY = ["library", "region", "specification"] as const;
 export const COMPANY_QUERY_KEY = ["library", "company"] as const;
 export const SOURCE_QUERY_KEY = ["library", "source"] as const;
 export const COMPLETION_STATUS_QUERY_KEY = ["library", "completion-status"] as const;
@@ -26,18 +28,29 @@ export interface PanelObjectDTO {
     name?: string | null;
 }
 
-export interface PanelLibraryPluginDTO extends PanelObjectDTO {
-    hasIcon?: boolean;
+export interface PanelLibraryPluginToSaveDTO {
+    dto: PanelLibraryPluginDTO;
+    icon: File | null;
+    backgroundImage: File | null;
+}
 
+export interface PanelLibraryPluginDTO extends PanelObjectDTO {
     iconUrl?: string;
+    backgroundImageUrl?: string;
 
     isSavingIcon?: boolean;
+    isSavingBackgroundImage?: boolean;
+}
+
+export interface PanelPlatformToSaveDTO {
+    dto: PanelPlatformDTO;
+    icon: File | null;
+    backgroundImage: File | null;
+    coverImage: File | null;
 }
 
 export interface PanelPlatformDTO extends PanelObjectDTO {
-    hasIcon?: boolean;
-    hasCoverImage?: boolean;
-    hasBackgroundImage?: boolean;
+    specificationId?: string | null;
 
     iconUrl?: string;
     coverImageUrl?: string;
@@ -52,7 +65,9 @@ export type PanelAgeRatingDTO = PanelObjectDTO
 
 export type PanelGenreDTO = PanelObjectDTO
 
-export type PanelRegionDTO = PanelObjectDTO
+export interface PanelRegionDTO extends PanelObjectDTO {
+    specificationId?: string | null;
+}
 
 export type PanelCompanyDTO = PanelObjectDTO
 
@@ -135,3 +150,4 @@ export interface PanelGameDTO extends PanelObjectDTO {
     isSavingCoverImage?: boolean;
     isSavingBackgroundImage?: boolean;
 }
+

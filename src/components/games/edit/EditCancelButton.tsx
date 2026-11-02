@@ -9,13 +9,13 @@ export function EditCancelButton({editMode, gameId}: Readonly<{
     const selectedGameId = useGameListStore((state) => state.selectedGameId);
     const navigate = useNavigate();
 
-    const handleCancel = () => {
+    const handleCancel = async () => {
         if (editMode && gameId) {
-            navigate("/games/" + gameId);
+            await navigate("/games/" + gameId);
         } else if (selectedGameId) {
-            navigate("/games/" + selectedGameId);
+            await navigate("/games/" + selectedGameId);
         } else {
-            navigate("/games");
+            await navigate("/games");
         }
     }
 

@@ -24,13 +24,14 @@ export default function ResizableFrame({html}: Readonly<ResizableFrameProps>) {
                 line-height: ${theme.typography.body1.lineHeight};
             }
         </style>
-        <script async src="/node_modules/@iframe-resizer/child/index.umd.js"></script>
+        <script async src="/js/iframe-resizer-child.js"></script>
         </head>
-        <body>${sanitizedHtml}</body>
+        <body>${sanitizedHtml ?? ""}</body>
         </html>`;
     return <IframeResizer
         license="GPLv3"
         srcDoc={fullHtml}
+        sandbox=""
         scrolling={true}
         style={{width: '100%', border: 'none'}}
     />

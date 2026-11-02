@@ -1,87 +1,16 @@
-import {useState} from "react";
-import {Box, CircularProgress, type SxProps, type Theme} from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import {OptionalImage, type OptionalImageProps} from "./OptionalImage.tsx";
 
-interface IconImageProps {
-    src?: string | null;
-    alt?: string | null;
-    title?: string | null;
-    width?: number;
-    height?: number;
-    sx?: SxProps<Theme>;
-}
-
-type ImageContentProps = IconImageProps
-
-function ImageContent({src, alt, title, width, height, sx}: Readonly<ImageContentProps>) {
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
-    const fontSize = width && height ? Math.min(width, height) : 32;
-
+export function IconImage({src, alt, title, width, height, closeIconSize, sx}: Readonly<OptionalImageProps>) {
     return (
-        <Box
-            sx={[
-                {
-                    position: "relative",
-                    width: width,
-                    height: height,
-                },
-                ...(Array.isArray(sx) ? sx : [sx]),
-            ]}
-        >
-            {loading && !error && (
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <CircularProgress/>
-                </Box>
-            )}
-            {error && (
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <CloseIcon sx={{fontSize: fontSize}}/>
-                </Box>
-            )}
-
-            <img
-                src={src || "/applogo_dark.png"}
-                alt={alt || ""}
-                title={title || ""}
-                onLoad={() => {
-                    setLoading(false)
-                    setError(false)
-                }}
-                onError={() => {
-                    setLoading(false);
-                    setError(true);
-                }}
-                loading="lazy"
-                style={{
-                    opacity: loading || error ? 0 : 1,
-                    width: width || "100%",
-                    height: height || "100%",
-                    objectFit: "cover",
-                    transition: "opacity 0.1s ease",
-                }}
-            />
-        </Box>
-    );
-}
-
-export default function IconImage(props: Readonly<IconImageProps>) {
-    return <ImageContent key={props.src} {...props} />;
+        <OptionalImage
+            src={src}
+            defaultSrc="/applogo_dark.png"
+            alt={alt}
+            title={title}
+            width={width}
+            height={height}
+            closeIconSize={closeIconSize}
+            sx={sx}
+        />
+    )
 }

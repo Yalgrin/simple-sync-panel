@@ -110,8 +110,8 @@ export async function performPostJsonRequest(
 ) {
     const modifiedInit: RequestInit = init ? {...init} : {};
     modifiedInit.method = "POST";
-    modifiedInit.headers = {
-        "Content-Type": "application/json"
-    }
+    const headers = new Headers(modifiedInit.headers);
+    headers.set("Content-Type", "application/json");
+    modifiedInit.headers = headers;
     return doPerformRequest(queryClient, input, modifiedInit, true);
 }
