@@ -8,6 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ClearIcon from '@mui/icons-material/Clear';
+import {useTranslation} from 'react-i18next';
 
 export default function NumberField({
                                         id: idProp,
@@ -20,6 +21,7 @@ export default function NumberField({
     size?: 'small' | 'medium';
     error?: boolean;
 }) {
+    const {t} = useTranslation();
     const [internalValue, setInternalValue] = React.useState<number | null>(
         other.defaultValue ?? null,
     );
@@ -84,7 +86,7 @@ export default function NumberField({
                                 <IconButton
                                     size={size}
                                     sx={{p: 0.5}}
-                                    aria-label="Clear"
+                                    aria-label={t("common.clear")}
                                     disabled={state.disabled || state.readOnly || state.value === null}
                                     onClick={(event) => {
                                         if (other.value === undefined) {
@@ -115,7 +117,7 @@ export default function NumberField({
                                     }}
                                 >
                                     <BaseNumberField.Increment
-                                        render={<IconButton size={size} sx={{p: 0}} aria-label="Increase"/>}
+                                        render={<IconButton size={size} sx={{p: 0}} aria-label={t("common.increase")}/>}
                                     >
                                         <KeyboardArrowUpIcon
                                             fontSize={size}
@@ -123,7 +125,7 @@ export default function NumberField({
                                         />
                                     </BaseNumberField.Increment>
                                     <BaseNumberField.Decrement
-                                        render={<IconButton size={size} sx={{p: 0}} aria-label="Decrease"/>}
+                                        render={<IconButton size={size} sx={{p: 0}} aria-label={t("common.decrease")}/>}
                                     >
                                         <KeyboardArrowDownIcon
                                             fontSize={size}

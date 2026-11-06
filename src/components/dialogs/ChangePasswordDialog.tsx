@@ -2,10 +2,12 @@ import {Alert, Box, Button, DialogActions, DialogContent, TextField} from "@mui/
 import * as React from "react";
 import {useState} from "react";
 import {useChangePassword} from "../../hooks/auth.ts";
+import {useTranslation} from "react-i18next";
 
 export function ChangePasswordDialog({close}: Readonly<{
     close: () => void;
 }>) {
+    const {t} = useTranslation();
     const changePasswordMutation = useChangePassword();
 
     const [newPasswordError, setNewPasswordError] = useState(false);
@@ -23,8 +25,8 @@ export function ChangePasswordDialog({close}: Readonly<{
         if (newPassword.value !== repeatedNewPassword.value) {
             setNewPasswordError(true);
             setRepeatedNewPasswordError(true);
-            setNewPasswordErrorMessage('Passwords do not match!');
-            setRepeatedNewPasswordErrorMessage('Passwords do not match!');
+            setNewPasswordErrorMessage(t("changePassword.validation.passwordsDoNotMatch"));
+            setRepeatedNewPasswordErrorMessage(t("changePassword.validation.passwordsDoNotMatch"));
             isValid = false;
         } else {
             setNewPasswordError(false);
@@ -35,7 +37,7 @@ export function ChangePasswordDialog({close}: Readonly<{
 
         if (isValid && oldPassword.value === newPassword.value) {
             setNewPasswordError(true);
-            setNewPasswordErrorMessage('New password must be different from the old password!');
+            setNewPasswordErrorMessage(t("changePassword.validation.newPasswordMustDiffer"));
             isValid = false;
         } else {
             setNewPasswordError(false);
@@ -63,10 +65,10 @@ export function ChangePasswordDialog({close}: Readonly<{
     };
 
     return (<>
-        <DialogContent>
+        <DialogContent sx={{minWidth: '360px'}}>
             {changePasswordMutation.isError && (
                 <Alert severity="error" sx={{marginBottom: '24px'}}>
-                    Failed to change password. Check your credentials and try again.
+                    {t("changePassword.error.changeFailed")}
                 </Alert>
             )}
             <Box
@@ -87,7 +89,7 @@ export function ChangePasswordDialog({close}: Readonly<{
                     margin="dense"
                     id="oldPassword"
                     name="oldPassword"
-                    label="Old password"
+                    label={t("changePassword.fields.oldPassword")}
                     autoComplete="current-password"
                     type="password"
                     fullWidth
@@ -100,7 +102,7 @@ export function ChangePasswordDialog({close}: Readonly<{
                     margin="dense"
                     id="newPassword"
                     name="newPassword"
-                    label="New password"
+                    label={t("changePassword.fields.newPassword")}
                     type="password"
                     fullWidth
                     variant="standard"
@@ -113,7 +115,7 @@ export function ChangePasswordDialog({close}: Readonly<{
                     margin="dense"
                     id="repeatedNewPassword"
                     name="repeatedNewPassword"
-                    label="Repeat new password"
+                    label={t("changePassword.fields.repeatNewPassword")}
                     type="password"
                     fullWidth
                     variant="standard"
@@ -122,14 +124,14 @@ export function ChangePasswordDialog({close}: Readonly<{
             </Box>
         </DialogContent>
         <DialogActions>
-            <Button onClick={close} sx={{color: 'text.primary'}}>Cancel</Button>
+            <Button onClick={close} sx={{color: 'text.primary'}}>{t("common.cancel")}</Button>
             <Button
                 type="submit"
                 variant="contained"
                 form="change-password-form"
                 disabled={changePasswordMutation.isPending}
             >
-                Change password
+                {t("layout.topBar.changePassword")}
             </Button>
         </DialogActions>
     </>)

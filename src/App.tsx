@@ -1,4 +1,3 @@
-import {Box, CircularProgress, createTheme, CssBaseline, Stack, ThemeProvider, Typography} from "@mui/material";
 import type {ReactNode} from "react";
 import {Navigate, Outlet, useLocation, useMatch} from "react-router";
 import {MainLayout} from "./components/layout/MainLayout.tsx";
@@ -6,44 +5,8 @@ import {useCurrentUser} from "./hooks/auth.ts";
 import {useSseSession} from "./hooks/useSseSession.tsx";
 import {DialogProvider} from "./components/DialogProvider.tsx";
 import {SnackbarProvider} from "notistack";
-
-//TODO
-const theme = createTheme({
-    palette: {
-        mode: 'dark',
-        primary: {main: '#1565c0'},
-    }
-});
-
-function LoadingPage() {
-    return (
-        <Box sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            width: "100%",
-        }}>
-            <CircularProgress size="96px"/>
-        </Box>
-    );
-}
-
-//TODO
-function ErrorPage() {
-    return (
-        <Stack sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            width: "100%",
-        }}>
-            <Typography variant="h4" color="error">Error</Typography>
-            <Typography variant="body1" color="error">Something went wrong</Typography>
-        </Stack>
-    );
-}
+import {RootErrorPage} from "./pages/RootErrorPage.tsx";
+import {LoadingPage} from "./pages/LoadingPage.tsx";
 
 function App() {
     const {data: currentUser, isLoading, error} = useCurrentUser()
@@ -62,7 +25,7 @@ function App() {
     if (isLoading) {
         mainLayout = <LoadingPage/>;
     } else if (error) {
-        mainLayout = <ErrorPage/>;
+        mainLayout = <RootErrorPage/>;
     } else if (isLoginView) {
         mainLayout = <Outlet/>
     } else {
@@ -70,14 +33,11 @@ function App() {
     }
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline enableColorScheme/>
-            <DialogProvider>
-                <SnackbarProvider>
-                    {mainLayout}
-                </SnackbarProvider>
-            </DialogProvider>
-        </ThemeProvider>
+        <DialogProvider>
+            <SnackbarProvider>
+                {mainLayout}
+            </SnackbarProvider>
+        </DialogProvider>
     )
 }
 

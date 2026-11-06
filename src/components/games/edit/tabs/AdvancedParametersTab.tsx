@@ -6,6 +6,7 @@ import {NumericControl} from "../../../common/form-controls/NumericControl.tsx";
 import {Box} from "@mui/material";
 import {CheckboxControl} from "../../../common/form-controls/CheckboxControl.tsx";
 import {LargeTextControl} from "../../../common/form-controls/LargeTextControl.tsx";
+import {useTranslation} from "react-i18next";
 
 export interface AdvancedParametersTabProps {
     values: PanelGameDTO;
@@ -16,78 +17,79 @@ export function AdvancedParametersTab({
                                           values,
                                           setValues,
                                       }: Readonly<AdvancedParametersTabProps>) {
+    const {t} = useTranslation();
     return <>
         <DateTimeControl
-            name="Last played"
+            name={t("game.edit.lastPlayed")}
             value={values.lastActivity ?? ""}
             setValue={(value) => setValues({...values, lastActivity: value})}
         />
         <TextControl
-            name="Game id"
+            name={t("game.edit.gameId")}
             value={values.gameId ?? ""}
             setValue={() => {
             }}
             disabled={true}
         />
         <TimePlayedControl
-            name="Time played"
+            name={t("game.edit.timePlayed")}
             value={values.playtime}
             setValue={(value) => setValues({...values, playtime: value})}
         />
         <TextControl
-            name="Database id"
+            name={t("game.edit.databaseId")}
             value={values.playniteId ?? ""}
             setValue={() => {
             }}
             disabled={true}
         />
         <NumericControl
-            name="Play count"
+            name={t("game.edit.playCount")}
             value={values.playCount}
             setValue={(value) => setValues({...values, playCount: value})}
         />
         <TextControl
-            name="Library"
+            name={t("game.edit.library")}
             value={values.plugin?.name ?? "Playnite"}
             setValue={() => {
             }}
             disabled={true}
         />
         <TextControl
-            name="Version"
+            name={t("game.edit.version")}
             value={values.version ?? ""}
             setValue={(value) => setValues({...values, version: value})}
         />
         <Box/>
         <TextControl
-            name="Manual"
+            name={t("game.edit.manual")}
             value={values.manual ?? ""}
             setValue={(value) => setValues({...values, manual: value})}
         />
         <Box/>
         <CheckboxControl
-            name="Hidden"
+            name={t("game.edit.hidden")}
             value={values.isHidden ?? false}
             setValue={(value) => setValues({...values, isHidden: value})}
         />
         <CheckboxControl
-            name="Favorite"
+            name={t("game.edit.favorite")}
             value={values.isFavorite ?? false}
             setValue={(value) => setValues({...values, isFavorite: value})}
         />
         <DateTimeControl
-            name="Added"
+            name={t("game.edit.added")}
             value={values.added ?? ""}
             setValue={(value) => setValues({...values, added: value})}
         />
         <DateTimeControl
-            name="Modified"
+            name={t("game.edit.modified")}
             value={values.modified ?? ""}
             setValue={(value) => setValues({...values, modified: value})}
             disabled={true}
         />
         <LargeTextControl
-            name="Notes"
+            name={t("game.edit.notes")}
             value={values.notes ?? ""}
             setValue={(value) => setValues({...values, notes: value})}
         />

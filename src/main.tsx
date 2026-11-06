@@ -1,6 +1,7 @@
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import App from './App.tsx'
+import './i18n.ts'
 import {createBrowserRouter, RouterProvider} from "react-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {LoginPage} from "./pages/LoginPage.tsx";
@@ -14,6 +15,8 @@ import {LocalizationProvider} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {localeConfig} from "./localeInitialization.ts"
 import {LibraryListPane} from "./components/library/LibraryListPane.tsx";
+import {RootErrorPage} from "./pages/RootErrorPage.tsx";
+import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 
 //TODO localization
 //TODO error handling, 404 etc
@@ -22,6 +25,7 @@ const router = createBrowserRouter([
     {
         path: "/",
         Component: App,
+        ErrorBoundary: RootErrorPage,
         children: [
             {
                 path: "/",
@@ -75,6 +79,14 @@ const router = createBrowserRouter([
     }
 ])
 
+//TODO
+const theme = createTheme({
+    palette: {
+        mode: 'dark',
+        primary: {main: '#1565c0'},
+    }
+});
+
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
@@ -82,7 +94,10 @@ createRoot(document.getElementById('root')!).render(
         <QueryClientProvider client={queryClient}>
             <LocalizationProvider dateAdapter={AdapterDayjs}
                                   adapterLocale={localeConfig.dayjs}>
-                <RouterProvider router={router}/>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline enableColorScheme/>
+                    <RouterProvider router={router}/>
+                </ThemeProvider>
             </LocalizationProvider>
         </QueryClientProvider>
     </StrictMode>,

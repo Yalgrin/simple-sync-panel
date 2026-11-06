@@ -15,6 +15,7 @@ import {useState} from "react";
 import {useCurrentUser, useLogin} from "../hooks/auth.ts";
 import {Navigate, useLocation, useNavigate} from "react-router";
 import {useSnackbar} from "notistack";
+import {useTranslation} from "react-i18next";
 
 export function LoginPage() {
     const [loginError, setLoginError] = useState(false);
@@ -26,6 +27,8 @@ export function LoginPage() {
     const navigate = useNavigate();
     const {search} = useLocation();
     const {enqueueSnackbar} = useSnackbar();
+
+    const {t} = useTranslation();
 
     const loginMutation = useLogin()
 
@@ -56,7 +59,7 @@ export function LoginPage() {
             rememberMe: rememberMeCheckbox.checked,
         }, {
             onSuccess: () => navigate(destination, {replace: true}),
-            onError: () => enqueueSnackbar('Login failed. Please check your credentials.', {
+            onError: () => enqueueSnackbar(t('login.loginFailed'), {
                 variant: 'error',
                 anchorOrigin: {vertical: 'bottom', horizontal: 'right'}
             }),
@@ -71,7 +74,7 @@ export function LoginPage() {
 
         if (!login.value) {
             setLoginError(true);
-            setLoginErrorMessage('Please enter a valid login.');
+            setLoginErrorMessage(t('login.enterValidLogin'));
             isValid = false;
         } else {
             setLoginError(false);
@@ -80,7 +83,7 @@ export function LoginPage() {
 
         if (!password.value) {
             setPasswordError(true);
-            setPasswordErrorMessage('Please enter a valid password.');
+            setPasswordErrorMessage(t('login.enterValidPassword'));
             isValid = false;
         } else {
             setPasswordError(false);
@@ -115,7 +118,7 @@ export function LoginPage() {
                         marginBottom: '48px',
                     }}
                 >
-                    Simple Sync Panel Sign In
+                    {t('login.title')}
                 </Typography>
                 <Box
                     component="form"
@@ -134,7 +137,7 @@ export function LoginPage() {
                     }}
                 >
                     <FormControl>
-                        <FormLabel htmlFor="login">Login</FormLabel>
+                        <FormLabel htmlFor="login">{t('login.fields.login')}</FormLabel>
                         <TextField
                             error={loginError}
                             helperText={loginErrorMessage}
@@ -150,7 +153,7 @@ export function LoginPage() {
                         />
                     </FormControl>
                     <FormControl>
-                        <FormLabel htmlFor="password">Password</FormLabel>
+                        <FormLabel htmlFor="password">{t('login.fields.password')}</FormLabel>
                         <TextField
                             error={passwordError}
                             helperText={passwordErrorMessage}
@@ -166,7 +169,7 @@ export function LoginPage() {
                     </FormControl>
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" id="remember"/>}
-                        label="Remember me"
+                        label={t('login.fields.rememberMe')}
                     />
                     <Button
                         type="submit"
@@ -174,7 +177,7 @@ export function LoginPage() {
                         variant="contained"
                         disabled={loginMutation.isPending}
                     >
-                        Sign in
+                        {t('login.fields.signIn')}
                     </Button>
                 </Box>
             </Card>

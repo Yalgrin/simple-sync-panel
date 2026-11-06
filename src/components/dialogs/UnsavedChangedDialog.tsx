@@ -1,7 +1,9 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
 import {type Blocker} from "react-router";
+import {useTranslation} from "react-i18next";
 
 export function UnsavedChangedDialog({blocker}: Readonly<{ blocker: Blocker }>) {
+    const {t} = useTranslation();
     return (
         <Dialog
             open={blocker.state === "blocked"}
@@ -19,20 +21,20 @@ export function UnsavedChangedDialog({blocker}: Readonly<{ blocker: Blocker }>) 
                 },
             }}
         >
-            <DialogTitle>Discard unsaved changes?</DialogTitle>
-            <DialogContent>
-                <DialogContentText>Your changes have not been saved.</DialogContentText>
+            <DialogTitle>{t("unsavedChangeGuard.title")}</DialogTitle>
+            <DialogContent sx={{minWidth: '360px'}}>
+                <DialogContentText>{t("unsavedChangeGuard.message")}</DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => {
                     if (blocker.state === "blocked") blocker.reset();
                 }} autoFocus sx={{color: 'text.primary'}}>
-                    Keep editing
+                    {t("unsavedChangeGuard.keepEditing")}
                 </Button>
                 <Button variant="contained" color="error" onClick={() => {
                     if (blocker.state === "blocked") blocker.proceed();
                 }}>
-                    Discard changes
+                    {t("unsavedChangeGuard.discardChanges")}
                 </Button>
             </DialogActions>
         </Dialog>

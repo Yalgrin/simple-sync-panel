@@ -2,6 +2,7 @@ import {type ChangeEvent, type ReactNode, useEffect, useState} from "react";
 import {Box, Button, Divider, Paper, Stack, Typography} from "@mui/material";
 import type {BaseProps} from "../../common/BaseProps.ts";
 import {mergeStyles} from "../../../functions/util.ts";
+import {useTranslation} from "react-i18next";
 
 export interface MediaFieldProps extends BaseProps {
     name: string;
@@ -31,6 +32,7 @@ export function MediaControl({
                                  maxImageHeight = "100%",
                                  sx
                              }: Readonly<MediaFieldProps>) {
+    const {t} = useTranslation();
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     useEffect(() => {
@@ -69,7 +71,7 @@ export function MediaControl({
     if (isSaving) {
         if (previewUrl) {
             previewElement = (
-                <Box component="img" src={previewUrl} alt="Preview"
+                <Box component="img" src={previewUrl} alt={t("game.edit.media.preview")}
                      sx={{
                          display: "block",
                          maxWidth: maxImageWidth,
@@ -80,13 +82,13 @@ export function MediaControl({
                      }}/>
             )
         } else if (initialUrl) {
-            previewElement = (<Typography>Existing image will be removed</Typography>)
+            previewElement = (<Typography>{t("game.edit.media.existingImageWillBeRemoved")}</Typography>)
         } else {
-            previewElement = (<Typography>No image</Typography>)
+            previewElement = (<Typography>{t("game.edit.media.noImage")}</Typography>)
         }
     } else if (initialUrl) {
         previewElement = (
-            <Box component="img" src={initialUrl} alt="Preview"
+            <Box component="img" src={initialUrl} alt={t("game.edit.media.preview")}
                  sx={{
                      display: "block",
                      maxWidth: maxImageWidth,
@@ -97,7 +99,7 @@ export function MediaControl({
                  }}/>
         )
     } else {
-        previewElement = (<Typography>No image</Typography>)
+        previewElement = (<Typography>{t("game.edit.media.noImage")}</Typography>)
     }
 
 
@@ -124,7 +126,7 @@ export function MediaControl({
                 gap: "8px",
             }}>
                 <Button variant="contained" component="label">
-                    Add{' '}
+                    {t("common.add")}{' '}
                     <input
                         type="file"
                         accept="image/*"
@@ -132,8 +134,8 @@ export function MediaControl({
                         onChange={handleImageChange}
                     />
                 </Button>
-                <Button variant="contained" onClick={handleClear}>Clear</Button>
-                <Button variant="contained" onClick={handleReset}>Reset</Button>
+                <Button variant="contained" onClick={handleClear}>{t("common.clear")}</Button>
+                <Button variant="contained" onClick={handleReset}>{t("common.reset")}</Button>
             </Stack>
             <Divider/>
             <Box sx={{

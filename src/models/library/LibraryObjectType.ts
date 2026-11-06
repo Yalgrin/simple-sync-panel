@@ -14,6 +14,7 @@ import {LibraryCompletionStatusListPane} from "../../components/library/objects/
 import {LibraryFilterPresetListPane} from "../../components/library/objects/LibraryFilterPresetListPane.tsx";
 
 export interface LibraryObjectType {
+    id: string;
     name: string;
     path: string;
     component: ComponentType;
@@ -21,68 +22,81 @@ export interface LibraryObjectType {
 
 export const LIBRARY_OBJECT_TYPES: LibraryObjectType[] = [
     {
-        name: "Library plugins",
-        path: "/library/library-plugin",
-        component: LibraryPluginListPane,
-    },
-    {
+        id: "platform",
         name: "Platforms",
         path: "/library/platform",
         component: LibraryPlatformListPane,
     },
     {
+        id: "category",
         name: "Categories",
         path: "/library/category",
         component: LibraryCategoryListPane,
     },
     {
+        id: "genre",
         name: "Genres",
         path: "/library/genre",
         component: LibraryGenreListPane,
     },
     {
+        id: "company",
         name: "Companies",
         path: "/library/company",
         component: LibraryCompanyListPane,
     },
     {
+        id: "feature",
         name: "Features",
         path: "/library/feature",
         component: LibraryFeatureListPane,
     },
     {
+        id: "tag",
         name: "Tags",
         path: "/library/tag",
         component: LibraryTagListPane,
     },
     {
+        id: "series",
         name: "Series",
         path: "/library/series",
         component: LibrarySeriesListPane,
     },
     {
+        id: "age-rating",
         name: "Age ratings",
         path: "/library/age-rating",
         component: LibraryAgeRatingListPane,
     },
     {
+        id: "region",
         name: "Regions",
         path: "/library/region",
         component: LibraryRegionListPane,
     },
     {
+        id: "source",
         name: "Sources",
         path: "/library/source",
         component: LibrarySourceListPane,
     },
     {
+        id: "completion-status",
         name: "Completion statuses",
         path: "/library/completion-status",
         component: LibraryCompletionStatusListPane,
     },
     {
+        id: "filter-preset",
         name: "Filter presets",
         path: "/library/filter-preset",
         component: LibraryFilterPresetListPane,
+    },
+    {
+        id: "library-plugin",
+        name: "Library plugins",
+        path: "/library/library-plugin",
+        component: LibraryPluginListPane,
     },
 ];

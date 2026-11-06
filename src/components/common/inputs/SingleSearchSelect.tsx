@@ -6,6 +6,7 @@ import {Box, Button, IconButton, Popover, TextField, Typography} from "@mui/mate
 import type {SelectOption} from "../../../models/inputs/SelectOption.ts";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import {useTranslation} from "react-i18next";
 
 function OptionRow({
                        index,
@@ -58,6 +59,7 @@ export function SingleSearchSelect({
                                        value, setValue, options, setOptions = () => {
     }, allowAdd = false, disabled = false
                                    }: Readonly<SingleSearchSelectProps>) {
+    const {t} = useTranslation();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [searchText, setSearchText] = useState("");
 
@@ -91,7 +93,7 @@ export function SingleSearchSelect({
 
     const openAddDialog = () => {
         openDialog({
-            title: "Add new object",
+            title: t("common.addNewObject"),
             render: ({close}) => {
                 return <AddObjectDialog close={close} callback={addOption}/>;
             },
@@ -153,7 +155,7 @@ export function SingleSearchSelect({
             {allowAdd && (
                 <IconButton
                     size="small"
-                    aria-label="Add new object"
+                    aria-label={t("common.addNewObject")}
                     sx={{width: 40, height: "100%", p: 0}}
                     disabled={disabled}
                     onClick={() => {
@@ -183,7 +185,7 @@ export function SingleSearchSelect({
                     <TextField
                         size="small"
                         fullWidth
-                        placeholder="Search..."
+                        placeholder={t("common.searchPlaceholder")}
                         disabled={disabled}
                         value={searchText}
                         onChange={(event) => setSearchText(event.target.value)}

@@ -6,6 +6,7 @@ import {Box, Button, Checkbox, IconButton, Popover, TextField, Typography} from 
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import type {SelectOption} from "../../../models/inputs/SelectOption.ts";
+import {useTranslation} from "react-i18next";
 
 export interface MultipleSearchSelectProps {
     value: SelectOption<string>[];
@@ -66,6 +67,7 @@ export function MultipleSearchSelect({
                                          allowAdd = false,
                                          disabled = false
                                      }: Readonly<MultipleSearchSelectProps>) {
+    const {t} = useTranslation();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [searchText, setSearchText] = useState("");
     const [onlySelected, setOnlySelected] = useState(false);
@@ -109,7 +111,7 @@ export function MultipleSearchSelect({
 
     const openAddDialog = () => {
         openDialog({
-            title: "Add new object",
+            title: t("common.addNewObject"),
             render: ({close}) => {
                 return <AddObjectDialog close={close} callback={addOption}/>;
             },
@@ -178,7 +180,7 @@ export function MultipleSearchSelect({
             {allowAdd && (
                 <IconButton
                     size="small"
-                    aria-label="Add new object"
+                    aria-label={t("common.addNewObject")}
                     sx={{width: 40, height: "100%", p: 0}}
                     disabled={disabled}
                     onClick={() => {
@@ -213,7 +215,7 @@ export function MultipleSearchSelect({
                     <TextField
                         size="small"
                         fullWidth
-                        placeholder="Search..."
+                        placeholder={t("common.searchPlaceholder")}
                         value={searchText}
                         disabled={disabled}
                         onChange={(event) => setSearchText(event.target.value)}

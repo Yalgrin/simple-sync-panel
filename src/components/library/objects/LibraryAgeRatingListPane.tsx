@@ -1,16 +1,18 @@
 import {SimpleLibraryListPane} from "./SimpleLibraryListPane.tsx";
 import type {PanelAgeRatingDTO} from "../../../models/objects.ts";
 import {useDeleteAgeRating, useQueryAgeRatings, useSaveAgeRating} from "../../../hooks/objects.ts";
+import {useTranslation} from "react-i18next";
 
 export function LibraryAgeRatingListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryAgeRatings();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveAgeRating();
     const deleteMutation = useDeleteAgeRating();
 
     return (
         <SimpleLibraryListPane<PanelAgeRatingDTO>
-            name="Age ratings"
+            name={t('enums.LibraryObjectType.age-rating')}
             type="age-rating"
             addNewEnabled={true}
             objectList={objectList ?? []}

@@ -2,29 +2,31 @@ import {SimpleLibraryListPane} from "./SimpleLibraryListPane.tsx";
 import type {PanelLibraryPluginDTO} from "../../../models/objects.ts";
 import {useDeleteLibraryPlugin, useQueryLibraryPlugins, useSaveLibraryPlugin} from "../../../hooks/objects.ts";
 import {Typography} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 function Description() {
+    const {t} = useTranslation();
+
     return (
         <Typography
             variant="body2"
             color="error"
         >
-            Warning! Changes made in this section will not be sent to the plugin users. It's main purpose is to allow
-            you to clean up excessive data. Each Playnite instance manages its own plugins and it will likely be
-            overwritten on next sync.
+            {t('library.edit.libraryPluginWarning')}
         </Typography>
     );
 }
 
 export function LibraryPluginListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryLibraryPlugins();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveLibraryPlugin();
     const deleteMutation = useDeleteLibraryPlugin();
 
     return (
         <SimpleLibraryListPane<PanelLibraryPluginDTO>
-            name="Library plugins"
+            name={t('enums.LibraryObjectType.library-plugin')}
             type="library-plugin"
             description={<Description/>}
             objectList={objectList ?? []}

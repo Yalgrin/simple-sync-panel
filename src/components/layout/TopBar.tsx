@@ -11,8 +11,8 @@ import {ChangePasswordDialog} from "../dialogs/ChangePasswordDialog.tsx";
 import {FilterButton} from "../FilterButton.tsx";
 import {SessionStatusIcon} from "../SessionStatusIcon.tsx";
 import {version} from "../../../package.json";
-
-export const TOP_BAR_HEIGHT = 56;
+import {useTranslation} from "react-i18next";
+import {TOP_BAR_HEIGHT} from "../../constants/main-layout.ts";
 
 export function TopBar() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -23,6 +23,7 @@ export function TopBar() {
     const isAnyGamesView = isGamesView || isGamesSubView;
 
     const {openDialog} = useDialog();
+    const {t} = useTranslation();
 
     const handleClick = (event: { currentTarget: SetStateAction<HTMLElement | null>; }) => {
         setAnchorEl(event.currentTarget);
@@ -34,14 +35,14 @@ export function TopBar() {
     const handleChangePassword = () => {
         setAnchorEl(null);
         openDialog({
-            title: "Change password",
+            title: t('layout.topBar.changePassword'),
             render: ChangePasswordDialog,
         });
     };
     const handleLogout = () => {
         setAnchorEl(null);
         openDialog({
-            title: "Logout",
+            title: t('layout.topBar.logout'),
             render: LogoutDialog,
         });
     };
@@ -62,7 +63,7 @@ export function TopBar() {
                     paddingLeft: "8px",
                     flexGrowth: 0
                 }}>
-                    <SkeletonImage src="/logo.svg" alt="Logo" width={48} height={48}/>
+                    <SkeletonImage src="/logo.svg" alt={t("layout.topBar.logoAlt")} width={48} height={48}/>
                     <Typography variant="h6" sx={{
                         paddingLeft: "12px",
                         color: "text.primary",
@@ -70,10 +71,10 @@ export function TopBar() {
                             color: "text.primary",
                         },
                     }}>
-                        Simple Sync Panel
+                        {t('application.title')}
                     </Typography>
                     <Typography variant="caption" sx={{ml: 1, color: "text.secondary"}}>
-                        v{version}
+                        {t('application.version', {version})}
                     </Typography>
                 </Stack>
             </Link>
@@ -138,13 +139,13 @@ export function TopBar() {
                         <ListItemIcon>
                             <KeyIcon fontSize="small"/>
                         </ListItemIcon>
-                        Change password
+                        {t('layout.topBar.changePassword')}
                     </MenuItem>
                     <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                             <Logout fontSize="small"/>
                         </ListItemIcon>
-                        Logout
+                        {t('layout.topBar.logout')}
                     </MenuItem>
                 </Menu>
             </Stack>

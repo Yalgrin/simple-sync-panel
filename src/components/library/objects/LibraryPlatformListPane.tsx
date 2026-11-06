@@ -16,6 +16,7 @@ import {SingleSearchSelect} from "../../common/inputs/SingleSearchSelect.tsx";
 import {BaseControl} from "../../common/form-controls/BaseControl.tsx";
 import {UnsavedChangesGuard} from "../../common/UnsavedChangesGuard.tsx";
 import {useNavigate} from "react-router";
+import {useTranslation} from "react-i18next";
 
 export interface PlatformEditFormProps {
     initialValues: PanelPlatformDTO;
@@ -44,6 +45,7 @@ function PlatformEditForm({
     const [savedDestination, setSavedDestination] = useState<string | null>(null);
 
     const specValue = specifications.find(spec => spec.id === values.specificationId);
+    const {t} = useTranslation();
 
     useEffect(() => {
         if (savedDestination !== null) {
@@ -72,15 +74,15 @@ function PlatformEditForm({
                     padding: '16px',
                 }}>
                     <Typography variant="h6" sx={{fontWeight: 700, mb: 1}}>
-                        Editing platform: {initialValues.name}
+                        {t('library.edit.editingPlatform', {name: initialValues.name})}
                     </Typography>
 
                     <Divider sx={{marginY: "8px"}}/>
 
-                    <TextControl sx={{marginY: "8px"}} name="Name" value={values.name ?? ""}
+                    <TextControl sx={{marginY: "8px"}} name={t('library.edit.name')} value={values.name ?? ""}
                                  setValue={(value) => setValues({...values, name: value})}/>
                     <BaseControl sx={{marginY: "8px"}}>
-                        <Typography>Specification</Typography>
+                        <Typography>{t('library.edit.specification')}</Typography>
                         <SingleSearchSelect
                             value={specValue}
                             setValue={(spec) => setValues({...values, specificationId: spec?.id})}
@@ -92,7 +94,7 @@ function PlatformEditForm({
                     <Divider sx={{marginY: "8px"}}/>
 
                     <MediaControl
-                        name="Icon"
+                        name={t('library.edit.icon')}
                         initialUrl={initialValues.iconUrl}
                         isSaving={values.isSavingIcon ?? false}
                         setIsSaving={(value) => setValues({...values, isSavingIcon: value})}
@@ -103,7 +105,7 @@ function PlatformEditForm({
                         sx={{minHeight: '256px'}}
                     />
                     <MediaControl
-                        name="Cover image"
+                        name={t('library.edit.coverImage')}
                         initialUrl={initialValues.coverImageUrl}
                         isSaving={values.isSavingCoverImage ?? false}
                         setIsSaving={(value) => setValues({...values, isSavingCoverImage: value})}
@@ -114,7 +116,7 @@ function PlatformEditForm({
                         sx={{minHeight: '256px'}}
                     />
                     <MediaControl
-                        name="Background image"
+                        name={t('library.edit.backgroundImage')}
                         initialUrl={initialValues.backgroundImageUrl}
                         isSaving={values.isSavingBackgroundImage ?? false}
                         setIsSaving={(value) => setValues({...values, isSavingBackgroundImage: value})}
@@ -153,10 +155,10 @@ function PlatformEditForm({
                                         setSavedDestination('/library/platform');
                                     }
                                 })
-                            }}>Save</Button>
+                            }}>{t('library.edit.save')}</Button>
                     <Button variant="outlined" size="small" onClick={() => {
                         libraryListStoreActions.clear();
-                    }}>Cancel</Button>
+                    }}>{t('library.edit.cancel')}</Button>
                 </Box>
             </Paper>
             <UnsavedChangesGuard preventChange={isDirty && savedDestination === null}/>
@@ -176,6 +178,7 @@ function PlatformEditPane({
                               isLoading,
                               error
                           }: Readonly<PlatformEditPaneProps>) {
+    const {t} = useTranslation();
     const selectedObjectId = useLibraryListStore((state) => state.selectedObjectId);
     if (!selectedObjectId) {
         return null;
@@ -193,7 +196,7 @@ function PlatformEditPane({
                     alignItems: "center",
                 }}
             >
-                <CircularProgress enableTrackSlot size="10vh" aria-label="Loading..."/>
+                <CircularProgress enableTrackSlot size="10vh" aria-label={t("common.loading")}/>
             </Box>
         )
     }
@@ -216,13 +219,14 @@ function PlatformEditPane({
 export function LibraryPlatformListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryPlatforms();
     const {data: specifications, isLoading: isSpecLoading, error: specError} = useQueryPlatformSpecifications();
+    const {t} = useTranslation();
 
     const saveMutation = useSavePlatform();
     const deleteMutation = useDeletePlatform();
 
     return (
         <ComplexLibraryListPane<PanelPlatformDTO>
-            name="Platforms"
+            name={t('enums.LibraryObjectType.platform')}
             type="platform"
             addNewEnabled={true}
             objectList={objectList ?? []}

@@ -26,11 +26,17 @@ import {formatLocalDate, formatPlaytime} from "../../functions/util.ts";
 import {IconImage} from "../common/IconImage.tsx";
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import {
+    getInstallSizeCode,
+    getPastTimeSegmentCode,
+    getPlaytimeCategoryCode,
+    getScoreGroupCode,
     translateInstallSizeName,
     translatePastTimeSegmentName,
     translatePlaytimeCategoryName,
     translateScoreGroupName
 } from "../../functions/gameList.ts";
+import {useTranslation} from "react-i18next";
+import type {TFunction} from "i18next";
 
 const ROW_HEIGHT = 80;
 const GROUP_ROW_HEIGHT = 44;
@@ -38,18 +44,18 @@ const GROUP_ROW_HEIGHT = 44;
 const getRowHeight = (index: number, {rows}: RowData) =>
     rows[index]?.type === 'group' ? GROUP_ROW_HEIGHT : ROW_HEIGHT;
 
-const translateName = function (name: string | undefined, groupingOrder: string | undefined) {
+const translateName = function (t: TFunction<"translation", undefined>, name: string | undefined, groupingOrder: string | undefined) {
     if (groupingOrder && ['UserScore', 'CriticScore', 'CommunityScore'].includes(groupingOrder)) {
-        return translateScoreGroupName(name);
+        return translateScoreGroupName(t, getScoreGroupCode(name));
     }
     if (groupingOrder && ['LastActivity', 'RecentActivity', 'Added', 'Modified'].includes(groupingOrder)) {
-        return translatePastTimeSegmentName(name);
+        return translatePastTimeSegmentName(t, getPastTimeSegmentCode(name));
     }
     if (groupingOrder && groupingOrder == 'InstallSize') {
-        return translateInstallSizeName(name);
+        return translateInstallSizeName(t, getInstallSizeCode(name));
     }
     if (groupingOrder && groupingOrder == 'PlayTime') {
-        return translatePlaytimeCategoryName(name);
+        return translatePlaytimeCategoryName(t, getPlaytimeCategoryCode(name));
     }
     return name || '(None)';
 };
@@ -63,6 +69,7 @@ function GameRow({
                  }: RowComponentProps<RowData> & RowData) {
     const row = rows[index];
     const gameId = row?.type === 'game' ? row.game?.id : undefined;
+    const {t} = useTranslation();
 
     const isSelected = useGameListStore(
         (state) => gameId != null && state.selectedGameId === gameId
@@ -78,7 +85,7 @@ function GameRow({
                     sx={{height: GROUP_ROW_HEIGHT, px: 1.5}}
                 >
                     {row.expanded ? <ExpandMoreIcon/> : <ChevronRightIcon/>}
-                    <ListItemText primary={translateName(row.name, row.groupingOrder)} sx={{ml: 1}}/>
+                    <ListItemText primary={translateName(t, row.name, row.groupingOrder)} sx={{ml: 1}}/>
                     <Typography variant="caption">{row.count}</Typography>
                 </ListItemButton>
             </div>
@@ -340,6 +347,7 @@ function AddGameButton() {
 export function GameListPane() {
     const searchQuery = useFilterStore((state) => state.name);
     const filterActions = useFilterStore((state) => state.actions);
+    const {t} = useTranslation();
 
     return (
         <Box
@@ -353,7 +361,7 @@ export function GameListPane() {
 
             <Box sx={{p: 1.5, flex: 0}}>
                 <Typography variant="h6" sx={{fontWeight: 700, mb: 1}}>
-                    Games
+                    {t('game.list.title')}
                 </Typography>
 
                 <Box
@@ -369,7 +377,7 @@ export function GameListPane() {
                 >
                     <SearchIcon fontSize="small"/>
                     <InputBase
-                        placeholder="Search in library..."
+                        placeholder={t('game.list.searchInLibrary')}
                         sx={{flex: 1, fontSize: 14}}
                         onChange={e => filterActions.setName(e.target.value)}
                         value={searchQuery ?? ''}

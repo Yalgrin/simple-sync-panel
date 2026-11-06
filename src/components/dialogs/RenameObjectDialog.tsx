@@ -1,5 +1,6 @@
 import {Button, DialogActions, DialogContent, TextField} from "@mui/material";
 import {useState} from "react";
+import {useTranslation} from "react-i18next";
 
 export function RenameObjectDialog({close, oldName, disabledButtons, onRename}: Readonly<{
     close: () => void;
@@ -8,6 +9,7 @@ export function RenameObjectDialog({close, oldName, disabledButtons, onRename}: 
     onRename: (name: string) => Promise<void>;
 }>) {
     const [name, setName] = useState<string>(() => oldName)
+    const {t} = useTranslation();
 
     const handleAdd = async () => {
         if (name) {
@@ -17,13 +19,13 @@ export function RenameObjectDialog({close, oldName, disabledButtons, onRename}: 
     }
 
     return (<>
-        <DialogContent>
+        <DialogContent sx={{minWidth: '360px'}}>
             <TextField
                 autoFocus
                 required
                 margin="dense"
                 name="name"
-                label="Name"
+                label={t("common.name")}
                 fullWidth
                 variant="standard"
                 value={name}
@@ -31,8 +33,9 @@ export function RenameObjectDialog({close, oldName, disabledButtons, onRename}: 
             />
         </DialogContent>
         <DialogActions>
-            <Button onClick={close} sx={{color: 'text.primary'}}>Cancel</Button>
-            <Button variant="contained" color="primary" onClick={handleAdd} disabled={disabledButtons}>Rename</Button>
+            <Button onClick={close} sx={{color: 'text.primary'}}>{t("common.cancel")}</Button>
+            <Button variant="contained" color="primary" onClick={handleAdd}
+                    disabled={disabledButtons}>{t("common.rename")}</Button>
         </DialogActions>
     </>)
 }

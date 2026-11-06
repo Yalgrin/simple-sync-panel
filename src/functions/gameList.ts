@@ -1,4 +1,6 @@
-function getScoreGroupCode(name: string | undefined): string {
+import type {TFunction} from "i18next";
+
+export function getScoreGroupCode(name: string | undefined): string {
     if (!name || name == '10') {
         return 'NONE';
     }
@@ -6,18 +8,13 @@ function getScoreGroupCode(name: string | undefined): string {
 }
 
 //TODO actual translations
-export function translateScoreGroupName(name: string | undefined) {
-    const code = getScoreGroupCode(name);
-    if (!code || code === 'NONE') {
-        return '(None)';
-    }
-    if (/^O(\d)X$/.test(code)) {
-        return `${code[1]}x`;
-    }
-    return name;
+export function translateScoreGroupName(t: TFunction<"translation", undefined>, code: string | undefined) {
+    return t(`enums.ScoreGroup.${code ?? 'NONE'}`, {
+        defaultValue: code
+    });
 }
 
-function getPastTimeSegmentCode(name: string | undefined): string {
+export function getPastTimeSegmentCode(name: string | undefined): string {
     if (!name) {
         return 'NEVER';
     }
@@ -37,25 +34,13 @@ function getPastTimeSegmentCode(name: string | undefined): string {
     return 'NEVER';
 }
 
-export function translatePastTimeSegmentName(name: string | undefined) {
-    const code = getPastTimeSegmentCode(name);
-    if (code == 'TODAY') {
-        return "Today";
-    } else if (code == 'YESTERDAY') {
-        return "Yesterday";
-    } else if (code == 'PAST_WEEK') {
-        return "In past 7 days";
-    } else if (code == 'PAST_MONTH') {
-        return "In past 31 days";
-    } else if (code == 'PAST_YEAR') {
-        return "In past 365 days";
-    } else if (code == 'MORE_THAN_YEAR') {
-        return "More than 365 days ago";
-    }
-    return "Never";
+export function translatePastTimeSegmentName(t: TFunction<"translation", undefined>, code: string | undefined) {
+    return t(`enums.PastTimeSegment.${code ?? 'NEVER'}`, {
+        defaultValue: code
+    });
 }
 
-function getInstallSizeCode(name: string | undefined): string {
+export function getInstallSizeCode(name: string | undefined): string {
     if (!name) {
         return 'NONE';
     }
@@ -83,29 +68,13 @@ function getInstallSizeCode(name: string | undefined): string {
     }
 }
 
-export function translateInstallSizeName(name: string | undefined) {
-    const code = getInstallSizeCode(name);
-    if (code == 'S0_0MB_100MB') {
-        return "0 to 100MB";
-    } else if (code == 'S1_100MB_1GB') {
-        return "100MB to 1GB";
-    } else if (code == 'S2_1GB_5GB') {
-        return "1GB to 5GB";
-    } else if (code == 'S3_5GB_10GB') {
-        return "5GB to 10GB";
-    } else if (code == 'S4_10GB_20GB') {
-        return "10GB to 20GB";
-    } else if (code == 'S5_20GB_40GB') {
-        return "20GB to 40GB";
-    } else if (code == 'S6_40GB_100GB') {
-        return "40GB to 100GB";
-    } else if (code == 'S7_100GB_PLUS') {
-        return "100GB or more";
-    }
-    return "None";
+export function translateInstallSizeName(t: TFunction<"translation", undefined>, code: string | undefined) {
+    return t(`enums.InstallSizeGroup.${code ?? 'NONE'}`, {
+        defaultValue: code
+    });
 }
 
-function getPlaytimeCategoryCode(name: string | undefined): string {
+export function getPlaytimeCategoryCode(name: string | undefined): string {
     if (!name) {
         return 'NOT_PLAYED';
     }
@@ -129,20 +98,8 @@ function getPlaytimeCategoryCode(name: string | undefined): string {
     }
 }
 
-export function translatePlaytimeCategoryName(name: string | undefined) {
-    const code = getPlaytimeCategoryCode(name);
-    if (code == 'LESS_THAN_HOUR') {
-        return "Less than an hour";
-    } else if (code == 'O1_10') {
-        return "1 to 10 hours";
-    } else if (code == 'O10_100') {
-        return "10 to 100 hours";
-    } else if (code == 'O100_500') {
-        return "100 to 500 hours";
-    } else if (code == 'O500_1000') {
-        return "500 to 1000 hours";
-    } else if (code == 'O1000_PLUS') {
-        return "1000 hours or more";
-    }
-    return "Not played";
+export function translatePlaytimeCategoryName(t: TFunction<"translation", undefined>, code: string | undefined) {
+    return t(`enums.PlaytimeCategory.${code ?? 'NOT_PLAYED'}`, {
+        defaultValue: code
+    });
 }

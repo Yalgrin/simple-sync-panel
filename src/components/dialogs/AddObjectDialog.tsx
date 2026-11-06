@@ -1,11 +1,13 @@
 import {Button, DialogActions, DialogContent, TextField} from "@mui/material";
 import {useState} from "react";
+import {useTranslation} from "react-i18next";
 
 export function AddObjectDialog({close, callback}: Readonly<{
     close: () => void;
     callback: (name: string) => void;
 }>) {
     const [name, setName] = useState<string>("")
+    const {t} = useTranslation();
 
     const handleAdd = () => {
         if (name) {
@@ -15,13 +17,13 @@ export function AddObjectDialog({close, callback}: Readonly<{
     }
 
     return (<>
-        <DialogContent>
+        <DialogContent sx={{minWidth: '360px'}}>
             <TextField
                 autoFocus
                 required
                 margin="dense"
                 name="name"
-                label="Name"
+                label={t("common.name")}
                 fullWidth
                 variant="standard"
                 value={name}
@@ -29,8 +31,8 @@ export function AddObjectDialog({close, callback}: Readonly<{
             />
         </DialogContent>
         <DialogActions>
-            <Button onClick={close} sx={{color: 'text.primary'}}>Cancel</Button>
-            <Button variant="contained" color="primary" onClick={handleAdd}>Add</Button>
+            <Button onClick={close} sx={{color: 'text.primary'}}>{t("common.cancel")}</Button>
+            <Button variant="contained" color="primary" onClick={handleAdd}>{t("common.add")}</Button>
         </DialogActions>
     </>)
 }

@@ -1,16 +1,18 @@
 import {SimpleLibraryListPane} from "./SimpleLibraryListPane.tsx";
 import type {PanelGenreDTO} from "../../../models/objects.ts";
 import {useDeleteGenre, useQueryGenres, useSaveGenre} from "../../../hooks/objects.ts";
+import {useTranslation} from "react-i18next";
 
 export function LibraryGenreListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryGenres();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveGenre();
     const deleteMutation = useDeleteGenre();
 
     return (
         <SimpleLibraryListPane<PanelGenreDTO>
-            name="Genres"
+            name={t('enums.LibraryObjectType.genre')}
             type="genre"
             addNewEnabled={true}
             objectList={objectList ?? []}

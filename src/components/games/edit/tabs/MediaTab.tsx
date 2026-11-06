@@ -1,5 +1,6 @@
 import type {PanelGameDTO} from "../../../../models/objects.ts";
 import {MediaControl} from "../MediaControl.tsx";
+import {useTranslation} from "react-i18next";
 
 export interface MediaTabProps {
     values: PanelGameDTO;
@@ -24,9 +25,10 @@ export function MediaTab({
                              backgroundImageFile,
                              setBackgroundImageFile
                          }: Readonly<MediaTabProps>) {
+    const {t} = useTranslation();
     return <>
         <MediaControl
-            name="Icon"
+            name={t("game.edit.media.icon")}
             initialUrl={initialValues.iconUrl}
             isSaving={values.isSavingIcon ?? false}
             setIsSaving={(value) => setValues({...values, isSavingIcon: value})}
@@ -34,7 +36,7 @@ export function MediaTab({
             setFile={setIconFile}
         />
         <MediaControl
-            name="Cover image"
+            name={t("game.edit.media.coverImage")}
             initialUrl={initialValues.coverImageUrl}
             isSaving={values.isSavingCoverImage ?? false}
             setIsSaving={(value) => setValues({...values, isSavingCoverImage: value})}
@@ -42,7 +44,7 @@ export function MediaTab({
             setFile={setCoverImageFile}
         />
         <MediaControl
-            name="Background image"
+            name={t("game.edit.media.backgroundImage")}
             wideInput={true}
             initialUrl={initialValues.backgroundImageUrl}
             isSaving={values.isSavingBackgroundImage ?? false}

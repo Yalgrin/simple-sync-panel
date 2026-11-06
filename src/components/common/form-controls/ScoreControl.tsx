@@ -1,5 +1,5 @@
 import {Typography} from "@mui/material";
-import NumberField from "../../NumberField.tsx";
+import NumberField from "../inputs/NumberField.tsx";
 import {BaseControl, type BaseControlProps} from "./BaseControl.tsx";
 import {DEFAULT_LABEL_WIDTH} from "../../../constants/form-controls.ts";
 

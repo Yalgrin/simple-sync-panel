@@ -3,6 +3,7 @@ import {Box, Button, IconButton, Stack, TextField, Typography} from "@mui/materi
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import CloseIcon from "@mui/icons-material/Close";
+import {useTranslation} from "react-i18next";
 
 export type LinkRow = { key: string; link: LinkDTO };
 
@@ -15,6 +16,7 @@ export function LinksTab({
                              rows,
                              setRows
                          }: Readonly<LinksTabProps>) {
+    const {t} = useTranslation();
 
     const updateLink = (key: string, changes: Partial<LinkDTO>) => {
         setRows(rows.map((row) =>
@@ -42,9 +44,9 @@ export function LinksTab({
                     onClick={() => setRows([
                         ...rows,
                         {key: crypto.randomUUID(), link: {name: "", url: ""}},
-                    ])}>Add link</Button>
+                    ])}>{t("game.edit.links.add")}</Button>
 
-            {rows.length === 0 && <Typography>No links</Typography>}
+            {rows.length === 0 && <Typography>{t("game.edit.links.none")}</Typography>}
 
             {rows.map(({key, link}, index) => (
                 <Box

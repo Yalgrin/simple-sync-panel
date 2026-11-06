@@ -37,6 +37,7 @@ import {type LinkRow, LinksTab} from "./edit/tabs/LinksTab.tsx";
 import {MediaTab} from "./edit/tabs/MediaTab.tsx";
 import {UnsavedChangesGuard} from "../common/UnsavedChangesGuard.tsx";
 import {hasGameNotBeenChanged} from "../../functions/game.ts";
+import {useTranslation} from "react-i18next";
 
 interface GameEditFormProps {
     editMode: boolean;
@@ -103,6 +104,7 @@ function GameEditForm({
 
     const saveGame = useSaveGame();
     const navigate = useNavigate();
+    const {t} = useTranslation();
 
     const [tab, setTab] = useState(0);
 
@@ -125,7 +127,7 @@ function GameEditForm({
         }}>
             <Paper elevation={1} sx={{padding: '8px'}}>
                 <Typography variant="h6" sx={{fontWeight: 700}}>
-                    {editMode ? `Editing game: ${initialValues?.name ?? ""}` : "Adding new game"}
+                    {editMode ? t("game.edit.title", {name: initialValues?.name ?? ""}) : t("game.add.title")}
                 </Typography>
             </Paper>
 
@@ -135,10 +137,10 @@ function GameEditForm({
                 value={tab}
                 onChange={(_, value: number) => setTab(value)}
             >
-                <Tab key="0" label="General"/>
-                <Tab key="1" label="Advanced"/>
-                <Tab key="2" label="Media"/>
-                <Tab key="3" label="Links"/>
+                <Tab key="0" label={t("game.edit.tabs.general")}/>
+                <Tab key="1" label={t("game.edit.tabs.advanced")}/>
+                <Tab key="2" label={t("game.edit.tabs.media")}/>
+                <Tab key="3" label={t("game.edit.tabs.links")}/>
             </Tabs>
 
             <Box sx={{
@@ -228,7 +230,7 @@ function GameEditForm({
                                         setSavedDestination('/games/' + result.id);
                                     }
                                 })
-                            }}>Save</Button>
+                            }}>{t("game.edit.save")}</Button>
                     <EditCancelButton editMode={editMode} gameId={initialValues.id}/>
                 </Box>
             </Paper>
@@ -238,6 +240,7 @@ function GameEditForm({
 }
 
 function GameAddPane() {
+    const {t} = useTranslation();
     const gameDetails: PanelGameDTO = {
         ageRatings: [],
         categories: [],
@@ -254,7 +257,7 @@ function GameAddPane() {
         regions: [],
         series: [],
         tags: [],
-        name: "New game"
+        name: t("game.add.defaultName")
     };
 
     const {data: series} = useQuerySeries();
@@ -286,6 +289,7 @@ function GameAddPane() {
 }
 
 function GameEditPane({id}: Readonly<{ id: string }>) {
+    const {t} = useTranslation();
     const {data: gameDetails, isLoading: gameLoading} = useQueryGameDetails(Number.parseInt(id));
     const {data: series, isLoading: seriesLoading} = useQuerySeries();
     const {data: platforms, isLoading: platformsLoading} = useQueryPlatforms();
@@ -312,7 +316,7 @@ function GameEditPane({id}: Readonly<{ id: string }>) {
                     alignItems: "center",
                 }}
             >
-                <CircularProgress enableTrackSlot size="10vh" aria-label="Loading..."/>
+                <CircularProgress enableTrackSlot size="10vh" aria-label={t("common.loading")}/>
             </Box>
         )
     }

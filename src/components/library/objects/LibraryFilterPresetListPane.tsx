@@ -7,6 +7,7 @@ import {Box, Button, Checkbox, CircularProgress, Divider, FormControlLabel, Pape
 import {TextControl} from "../../common/form-controls/TextControl.tsx";
 import {UnsavedChangesGuard} from "../../common/UnsavedChangesGuard.tsx";
 import {ComplexLibraryListPane} from "./ComplexLibraryListPane.tsx";
+import {useTranslation} from "react-i18next";
 
 export interface FilterPresetEditFormProps {
     initialValues: PanelFilterPresetDTO;
@@ -26,6 +27,7 @@ function FilterPresetEditForm({
 
     const isDirty = initialValues.name !== values.name || initialValues.showInFullscreenQuickSelection != values.showInFullscreenQuickSelection;
     const [savedDestination, setSavedDestination] = useState<string | null>(null);
+    const {t} = useTranslation();
 
     useEffect(() => {
         if (savedDestination !== null) {
@@ -54,12 +56,12 @@ function FilterPresetEditForm({
                     padding: '16px',
                 }}>
                     <Typography variant="h6" sx={{fontWeight: 700, mb: 1}}>
-                        Editing filter preset: {initialValues.name}
+                        {t('library.edit.editingFilterPreset', {name: initialValues.name})}
                     </Typography>
 
                     <Divider sx={{marginY: "8px"}}/>
 
-                    <TextControl sx={{marginY: "8px"}} name="Name" value={values.name ?? ""}
+                    <TextControl sx={{marginY: "8px"}} name={t("common.name")} value={values.name ?? ""}
                                  setValue={(value) => setValues({...values, name: value})}/>
                     <FormControlLabel control={<Checkbox
                         size="small"
@@ -69,7 +71,7 @@ function FilterPresetEditForm({
                             ...values,
                             showInFullscreenQuickSelection: event.target.checked
                         })}
-                    />} label="Show as quick filter in Fullscreen mode"/>
+                    />} label={t('library.edit.showInFullscreenQuickSelection')}/>
 
                 </Box>
             </Box>
@@ -95,10 +97,10 @@ function FilterPresetEditForm({
                                         setSavedDestination('/library/filter-preset');
                                     }
                                 })
-                            }}>Save</Button>
+                            }}>{t('library.edit.save')}</Button>
                     <Button variant="outlined" size="small" onClick={() => {
                         libraryListStoreActions.clear();
-                    }}>Cancel</Button>
+                    }}>{t('library.edit.cancel')}</Button>
                 </Box>
             </Paper>
             <UnsavedChangesGuard preventChange={isDirty && savedDestination === null}/>
@@ -116,6 +118,7 @@ function FilterPresetEditPane({
                                   isLoading,
                                   error
                               }: Readonly<FilterPresetEditPaneProps>) {
+    const {t} = useTranslation();
     const selectedObjectId = useLibraryListStore((state) => state.selectedObjectId);
     if (!selectedObjectId) {
         return null;
@@ -133,7 +136,7 @@ function FilterPresetEditPane({
                     alignItems: "center",
                 }}
             >
-                <CircularProgress enableTrackSlot size="10vh" aria-label="Loading..."/>
+                <CircularProgress enableTrackSlot size="10vh" aria-label={t("common.loading")}/>
             </Box>
         )
     }
@@ -154,13 +157,14 @@ function FilterPresetEditPane({
 
 export function LibraryFilterPresetListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useOueryFilterPresets();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveFilterPreset();
     const deleteMutation = useDeleteFilterPreset();
 
     return (
         <ComplexLibraryListPane<PanelFilterPresetDTO>
-            name="Filter presets"
+            name={t('enums.LibraryObjectType.filter-preset')}
             type="filter-preset"
             objectList={objectList ?? []}
             isLoading={isLoading || saveMutation.isPending || deleteMutation.isPending}

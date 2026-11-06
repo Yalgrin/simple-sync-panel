@@ -2,15 +2,18 @@ import {NavLink} from "react-router";
 import {Box, IconButton, Stack, Tooltip} from "@mui/material";
 import SportsEsportsRoundedIcon from '@mui/icons-material/SportsEsportsRounded';
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
+import {useTranslation} from "react-i18next";
 
 export const SIDEBAR_WIDTH = 64;
 
 const options = [
-    {label: "Games", icon: <SportsEsportsRoundedIcon/>, href: "/games"},
-    {label: "Library", icon: <AppsRoundedIcon/>, href: "/library"},
+    {labelKey: "games", icon: <SportsEsportsRoundedIcon/>, href: "/games"},
+    {labelKey: "library", icon: <AppsRoundedIcon/>, href: "/library"},
 ];
 
 export function SideBar() {
+    const {t} = useTranslation();
+
     return (
         <Box
             sx={{
@@ -24,14 +27,14 @@ export function SideBar() {
             }}
         >
             <Stack spacing={1} sx={{alignItems: "center"}}>
-                {options.map(({label, icon, href}) => (
+                {options.map(({labelKey, icon, href}) => (
                     <NavLink
                         key={href}
                         to={href}
                         style={{textDecoration: 'none'}}
                     >
                         {({isActive}) => (
-                            <Tooltip title={label} placement="right">
+                            <Tooltip title={t(`layout.sideBar.${labelKey}`)} placement="right">
                                 <IconButton
                                     sx={{
                                         color: isActive ? 'text.primary' : 'text.secondary',

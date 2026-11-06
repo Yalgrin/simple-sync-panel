@@ -31,7 +31,7 @@ export default function ResizableFrame({html}: Readonly<ResizableFrameProps>) {
     return <IframeResizer
         license="GPLv3"
         srcDoc={fullHtml}
-        sandbox=""
+        sandbox="allow-scripts"
         scrolling={true}
         style={{width: '100%', border: 'none'}}
     />

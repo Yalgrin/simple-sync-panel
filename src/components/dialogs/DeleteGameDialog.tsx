@@ -1,12 +1,13 @@
 import {Button, DialogActions, DialogContent, DialogContentText} from "@mui/material";
 import type {PanelGameDTO} from "../../models/objects.ts";
 import {useDeleteGame} from "../../hooks/objects.ts";
+import {useTranslation} from "react-i18next";
 
 export function DeleteGameDialog({close, game}: Readonly<{
     close: () => void;
     game: PanelGameDTO;
 }>) {
-
+    const {t} = useTranslation();
     const deleteMutation = useDeleteGame(game);
 
     const handleDelete = () => {
@@ -16,15 +17,15 @@ export function DeleteGameDialog({close, game}: Readonly<{
     };
 
     return (<>
-        <DialogContent>
+        <DialogContent sx={{minWidth: '360px'}}>
             <DialogContentText>
-                Are you sure you want to delete the selected game?
+                {t("game.delete.confirmation")}
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={close} autoFocus sx={{color: 'text.primary'}}>Cancel</Button>
+            <Button onClick={close} autoFocus sx={{color: 'text.primary'}}>{t("common.cancel")}</Button>
             <Button variant="contained" color="error" onClick={handleDelete}
-                    disabled={deleteMutation.isPending}>Delete</Button>
+                    disabled={deleteMutation.isPending}>{t("common.delete")}</Button>
         </DialogActions>
     </>)
 }

@@ -1,16 +1,18 @@
 import {SimpleLibraryListPane} from "./SimpleLibraryListPane.tsx";
 import type {PanelCategoryDTO} from "../../../models/objects.ts";
 import {useDeleteCategory, useQueryCategories, useSaveCategory} from "../../../hooks/objects.ts";
+import {useTranslation} from "react-i18next";
 
 export function LibraryCategoryListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryCategories();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveCategory();
     const deleteMutation = useDeleteCategory();
 
     return (
         <SimpleLibraryListPane<PanelCategoryDTO>
-            name="Categories"
+            name={t('enums.LibraryObjectType.category')}
             type="category"
             addNewEnabled={true}
             objectList={objectList ?? []}

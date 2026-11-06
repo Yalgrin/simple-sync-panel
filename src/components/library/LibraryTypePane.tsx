@@ -1,13 +1,31 @@
 import {Box, Divider, ListItemButton, ListItemText, Typography, useTheme} from "@mui/material";
 import {LIBRARY_OBJECT_TYPES} from "../../models/library/LibraryObjectType.ts";
-import {NavLink} from "react-router";
+import {NavLink, useLocation} from "react-router";
 import {useLibraryListStore} from "../../store/useLibraryListStore.ts";
+import {useEffect, useRef} from "react";
+import {useTranslation} from "react-i18next";
+import {LIBRARY_TYPE_PAN_ROW_HEIGHT} from "../../constants/main-layout.ts";
 
-const ROW_HEIGHT = 48;
+function getLibraryTypePath(pathname: string) {
+    return LIBRARY_OBJECT_TYPES.find(
+        (type) => pathname === type.path || pathname.startsWith(`${type.path}/`)
+    )?.path;
+}
 
 export function LibraryTypePane() {
     const theme = useTheme();
     const libraryStoreActions = useLibraryListStore((state) => state.actions);
+    const {pathname} = useLocation();
+    const typePath = getLibraryTypePath(pathname);
+    const previousTypePath = useRef(typePath);
+    const {t} = useTranslation();
+
+    useEffect(() => {
+        if (previousTypePath.current !== typePath) {
+            libraryStoreActions.clear();
+            previousTypePath.current = typePath;
+        }
+    }, [typePath, libraryStoreActions]);
 
     return (
         <Box
@@ -21,7 +39,7 @@ export function LibraryTypePane() {
 
             <Box sx={{p: 1.5, flex: 0}}>
                 <Typography variant="h6" sx={{fontWeight: 700, mb: 1}}>
-                    Libraries
+                    {t('library.type-pane.title')}
                 </Typography>
             </Box>
 
@@ -33,11 +51,10 @@ export function LibraryTypePane() {
                         key={type.path}
                         to={type.path}
                         end={false}
-                        onClick={() => libraryStoreActions.clear()}
                         style={{
                             color: theme.palette.text.primary,
                             textDecoration: 'none',
-                            height: ROW_HEIGHT,
+                            height: LIBRARY_TYPE_PAN_ROW_HEIGHT,
                             alignItems: 'flex-start',
                             width: '100%'
                         }}
@@ -50,7 +67,8 @@ export function LibraryTypePane() {
                                     fontWeight: isActive ? 700 : 300
                                 }}
                             >
-                                <ListItemText sx={{textAlign: 'center'}}>{type.name}</ListItemText>
+                                <ListItemText
+                                    sx={{textAlign: 'center'}}>{t(`enums.LibraryObjectType.${type.id}`, {defaultValue: type.name})}</ListItemText>
                             </ListItemButton>
                         }}
                     </NavLink>

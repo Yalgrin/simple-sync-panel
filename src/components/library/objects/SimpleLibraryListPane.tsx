@@ -10,6 +10,7 @@ import {useDialog} from "../../../hooks/useDialog.ts";
 import {RenameObjectDialog} from "../../dialogs/RenameObjectDialog.tsx";
 import type {BaseProps} from "../../common/BaseProps.ts";
 import {useNavigate} from "react-router";
+import {useTranslation} from "react-i18next";
 import {AddObjectDialog} from "../../dialogs/AddObjectDialog.tsx";
 import {mergeStyles} from "../../../functions/util.ts";
 
@@ -30,6 +31,7 @@ function LibraryRow<T extends PanelObjectDTO>({
                                                   onEdit,
                                                   onDelete,
                                               }: RowComponentProps<LibraryRowProps<T>> & LibraryRowProps<T>) {
+    const {t} = useTranslation();
     const dto = objectList?.[index];
     const selectedObjectId = useLibraryListStore((state) => state.selectedObjectId);
 
@@ -45,10 +47,10 @@ function LibraryRow<T extends PanelObjectDTO>({
                 disablePadding
                 secondaryAction={
                     <>
-                        <IconButton edge="end" aria-label="edit" onClick={() => onEdit(dto)}>
+                        <IconButton edge="end" aria-label={t("common.edit")} onClick={() => onEdit(dto)}>
                             <EditIcon/>
                         </IconButton>
-                        <IconButton edge="end" aria-label="delete" onClick={() => onDelete(dto)}>
+                        <IconButton edge="end" aria-label={t("common.delete")} onClick={() => onDelete(dto)}>
                             <DeleteIcon/>
                         </IconButton>
                     </>
@@ -113,10 +115,11 @@ export function SimpleLibraryListPane<T extends PanelObjectDTO>({
 
     const {openDialog} = useDialog();
     const navigate = useNavigate();
+    const {t} = useTranslation();
 
     const handleAddNew = () => {
         openDialog({
-            title: "Add new object",
+            title: t("common.addNewObject"),
             render: ({close}) => {
                 return <AddObjectDialog
                     close={close}
@@ -130,7 +133,7 @@ export function SimpleLibraryListPane<T extends PanelObjectDTO>({
 
     const handleRename = (obj: T) => {
         openDialog({
-            title: "Rename object",
+            title: t("library.objectList.renameTitle"),
             render: ({close}) => {
                 if (obj == null) {
                     return null;
@@ -151,7 +154,7 @@ export function SimpleLibraryListPane<T extends PanelObjectDTO>({
 
     const handleDelete = (obj: T) => {
         openDialog({
-            title: "Delete object",
+            title: t("library.objectList.deleteTitle"),
             render: ({close}) => {
                 if (obj == null) {
                     return null;
@@ -191,7 +194,7 @@ export function SimpleLibraryListPane<T extends PanelObjectDTO>({
                     color="primary"
                     onClick={handleAddNew}
                 >
-                    Add new
+                    {t("library.objectList.addButton")}
                 </Button>}
             </Box>
 

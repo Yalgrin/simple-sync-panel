@@ -1,16 +1,18 @@
 import {SimpleLibraryListPane} from "./SimpleLibraryListPane.tsx";
 import type {PanelCompanyDTO} from "../../../models/objects.ts";
 import {useDeleteCompany, useQueryCompanies, useSaveCompany} from "../../../hooks/objects.ts";
+import {useTranslation} from "react-i18next";
 
 export function LibraryCompanyListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryCompanies();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveCompany();
     const deleteMutation = useDeleteCompany();
 
     return (
         <SimpleLibraryListPane<PanelCompanyDTO>
-            name="Company"
+            name={t('enums.LibraryObjectType.company')}
             type="company"
             addNewEnabled={true}
             objectList={objectList ?? []}

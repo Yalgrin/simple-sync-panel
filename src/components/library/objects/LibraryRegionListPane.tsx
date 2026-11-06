@@ -10,6 +10,7 @@ import {SingleSearchSelect} from "../../common/inputs/SingleSearchSelect.tsx";
 import {UnsavedChangesGuard} from "../../common/UnsavedChangesGuard.tsx";
 import {ComplexLibraryListPane} from "./ComplexLibraryListPane.tsx";
 import type {RegionSpecification} from "../../../models/library/RegionSpecification.ts";
+import {useTranslation} from "react-i18next";
 
 export interface RegionEditFormProps {
     initialValues: PanelRegionDTO;
@@ -34,6 +35,7 @@ function RegionEditForm({
     const [savedDestination, setSavedDestination] = useState<string | null>(null);
 
     const specValue = specifications.find(spec => spec.id === values.specificationId);
+    const {t} = useTranslation();
 
     useEffect(() => {
         if (savedDestination !== null) {
@@ -62,15 +64,15 @@ function RegionEditForm({
                     padding: '16px',
                 }}>
                     <Typography variant="h6" sx={{fontWeight: 700, mb: 1}}>
-                        Editing region: {initialValues.name}
+                        {t('library.edit.editingRegion', {name: initialValues.name})}
                     </Typography>
 
                     <Divider sx={{marginY: "8px"}}/>
 
-                    <TextControl sx={{marginY: "8px"}} name="Name" value={values.name ?? ""}
+                    <TextControl sx={{marginY: "8px"}} name={t('library.edit.name')} value={values.name ?? ""}
                                  setValue={(value) => setValues({...values, name: value})}/>
                     <BaseControl sx={{marginY: "8px"}}>
-                        <Typography>Specification</Typography>
+                        <Typography>{t('library.edit.specification')}</Typography>
                         <SingleSearchSelect
                             value={specValue}
                             setValue={(spec) => setValues({...values, specificationId: spec?.id})}
@@ -102,10 +104,10 @@ function RegionEditForm({
                                         setSavedDestination('/library/region');
                                     }
                                 })
-                            }}>Save</Button>
+                            }}>{t('library.edit.save')}</Button>
                     <Button variant="outlined" size="small" onClick={() => {
                         libraryListStoreActions.clear();
-                    }}>Cancel</Button>
+                    }}>{t('library.edit.cancel')}</Button>
                 </Box>
             </Paper>
             <UnsavedChangesGuard preventChange={isDirty && savedDestination === null}/>
@@ -125,6 +127,7 @@ function RegionEditPane({
                             isLoading,
                             error
                         }: Readonly<RegionEditPaneProps>) {
+    const {t} = useTranslation();
     const selectedObjectId = useLibraryListStore((state) => state.selectedObjectId);
     if (!selectedObjectId) {
         return null;
@@ -142,7 +145,7 @@ function RegionEditPane({
                     alignItems: "center",
                 }}
             >
-                <CircularProgress enableTrackSlot size="10vh" aria-label="Loading..."/>
+                <CircularProgress enableTrackSlot size="10vh" aria-label={t("common.loading")}/>
             </Box>
         )
     }
@@ -165,13 +168,14 @@ function RegionEditPane({
 export function LibraryRegionListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryRegions();
     const {data: specifications, isLoading: isSpecLoading, error: specError} = useQueryRegionSpecifications();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveRegion();
     const deleteMutation = useDeleteRegion();
 
     return (
         <ComplexLibraryListPane<PanelRegionDTO>
-            name="Regions"
+            name={t('enums.LibraryObjectType.region')}
             type="region"
             addNewEnabled={true}
             objectList={objectList ?? []}

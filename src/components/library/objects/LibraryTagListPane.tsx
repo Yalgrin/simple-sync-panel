@@ -1,16 +1,18 @@
 import {SimpleLibraryListPane} from "./SimpleLibraryListPane.tsx";
 import type {PanelTagDTO} from "../../../models/objects.ts";
 import {useDeleteTag, useQueryTags, useSaveTag} from "../../../hooks/objects.ts";
+import {useTranslation} from "react-i18next";
 
 export function LibraryTagListPane() {
     const {data: objectList, isLoading, isPlaceholderData, error} = useQueryTags();
+    const {t} = useTranslation();
 
     const saveMutation = useSaveTag();
     const deleteMutation = useDeleteTag();
 
     return (
         <SimpleLibraryListPane<PanelTagDTO>
-            name="Tags"
+            name={t('enums.LibraryObjectType.tag')}
             type="tag"
             addNewEnabled={true}
             objectList={objectList ?? []}

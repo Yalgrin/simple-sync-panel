@@ -14,6 +14,7 @@ import {useDialog} from "../../hooks/useDialog.ts";
 import {DeleteGameDialog} from "../dialogs/DeleteGameDialog.tsx";
 import type {PanelGameDTO} from "../../models/objects.ts";
 import {OptionalImage} from "../common/OptionalImage.tsx";
+import {useTranslation} from "react-i18next";
 
 interface StatCardProps {
     visible: boolean;
@@ -93,10 +94,11 @@ export function GameDetailsPane() {
     const isCurrentGame = gameDetails?.id === gameId;
 
     const {openDialog} = useDialog();
+    const {t} = useTranslation();
 
     const handleDelete = () => {
         openDialog({
-            title: "Delete game",
+            title: t("game.delete.title"),
             render: ({close}) => {
                 if (gameDetails == null) {
                     return null;
@@ -117,7 +119,7 @@ export function GameDetailsPane() {
                     alignItems: "center",
                 }}
             >
-                <CircularProgress enableTrackSlot size="10vh" aria-label="Loading..."/>
+                <CircularProgress enableTrackSlot size="10vh" aria-label={t("common.loading")}/>
             </Box>
         )
     }
@@ -162,7 +164,7 @@ export function GameDetailsPane() {
                     >
                         <OptionalImage
                             src={gameDetails?.id && gameDetails.coverImageUrl || ''}
-                            alt="Cover"
+                            alt={t("game.details.cover")}
                             closeIconSize={48}
                             width={250}
                             height={375}
@@ -212,7 +214,7 @@ export function GameDetailsPane() {
                                     py: 1,
                                 }}
                             >
-                                Edit
+                                {t('game.details.edit')}
                             </Button>
 
                             <MarkAsFavoriteButton gameDetails={gameDetails}/>
@@ -241,27 +243,27 @@ export function GameDetailsPane() {
                         }}>
                             <StatCard
                                 visible={!!gameDetails?.source?.name}
-                                label="Source"
+                                label={t('game.details.source')}
                                 value={gameDetails?.source?.name}/>
 
                             <StatCard
                                 visible={true}
-                                label="Last Played"
+                                label={t('game.details.lastPlayed')}
                                 value={formatLocalDate(gameDetails?.lastActivity)}/>
 
                             <StatCard
                                 visible={true}
-                                label="Time Played"
+                                label={t('game.details.timePlayed')}
                                 value={formatPlaytime(gameDetails?.playtime)}/>
 
                             <StatCard
                                 visible={!!gameDetails?.completionStatus?.name}
-                                label="Completion"
+                                label={t('game.details.completion')}
                                 value={gameDetails?.completionStatus?.name}/>
 
                             <StatCard
                                 visible={true}
-                                label="Play Count"
+                                label={t('game.details.playCount')}
                                 value={`${gameDetails?.playCount ?? 0} times`}/>
                         </Stack>
                     </CardContent>
@@ -275,7 +277,7 @@ export function GameDetailsPane() {
                 >
                     <CardContent>
                         <Typography variant="h6" sx={{fontWeight: 700, mb: 2}}>
-                            Links
+                            {t('game.details.links')}
                         </Typography>
                         <Stack direction="row" useFlexGap spacing="16px" sx={{flexWrap: 'wrap', minWidth: 0}}>
                             {gameDetails?.links?.map((link) => (
@@ -309,42 +311,48 @@ export function GameDetailsPane() {
                     >
                         <CardContent>
                             <Typography variant="h6" sx={{fontWeight: 700, mb: 2}}>
-                                Details
+                                {t('game.details.details')}
                             </Typography>
 
                             <Stack direction="column" spacing={1.5}>
-                                <DetailsRow label="Critic score" value={gameDetails?.criticScore}
+                                <DetailsRow label={t('game.details.criticScore')} value={gameDetails?.criticScore}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Community score" value={gameDetails?.communityScore}
+                                <DetailsRow label={t('game.details.communityScore')} value={gameDetails?.communityScore}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Platform"
+                                <DetailsRow label={t('game.details.platform')}
                                             value={gameDetails?.platforms?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Library" value={gameDetails?.plugin?.name} nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Release date" value={formatLocalDate(gameDetails?.releaseDate)}
+                                <DetailsRow label={t('game.details.library')} value={gameDetails?.plugin?.name}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Developer"
+                                <DetailsRow label={t('game.details.releaseDate')}
+                                            value={formatLocalDate(gameDetails?.releaseDate)}
+                                            nodeAtEnd={<Divider/>}/>
+                                <DetailsRow label={t('game.details.developer')}
                                             value={gameDetails?.developers?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Publisher"
+                                <DetailsRow label={t('game.details.publisher')}
                                             value={gameDetails?.publishers?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Genre" value={gameDetails?.genres?.map((platform) => platform.name)}
+                                <DetailsRow label={t('game.details.genre')}
+                                            value={gameDetails?.genres?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Category"
+                                <DetailsRow label={t('game.details.category')}
                                             value={gameDetails?.categories?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Feature"
+                                <DetailsRow label={t('game.details.feature')}
                                             value={gameDetails?.features?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Tag" value={gameDetails?.tags?.map((platform) => platform.name)}
+                                <DetailsRow label={t('game.details.tag')}
+                                            value={gameDetails?.tags?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Age rating"
+                                <DetailsRow label={t('game.details.ageRating')}
                                             value={gameDetails?.ageRatings?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Series" value={gameDetails?.series?.map((platform) => platform.name)}
+                                <DetailsRow label={t('game.details.series')}
+                                            value={gameDetails?.series?.map((platform) => platform.name)}
                                             nodeAtEnd={<Divider/>}/>
-                                <DetailsRow label="Install size" value={formatInstallSize(gameDetails?.installSize)}
+                                <DetailsRow label={t('game.details.installSize')}
+                                            value={formatInstallSize(gameDetails?.installSize)}
                                             nodeAtEnd={<Divider/>}/>
                             </Stack>
                         </CardContent>
@@ -357,7 +365,7 @@ export function GameDetailsPane() {
                     >
                         <CardContent>
                             <Typography variant="h6" sx={{fontWeight: 700, mb: 2}}>
-                                Description
+                                {t('game.details.description')}
                             </Typography>
                             <Typography variant="body2" sx={{color: 'grey.300', lineHeight: 1.7}}>
                                 <ResizableFrame

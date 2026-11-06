@@ -87,6 +87,7 @@ import {
     saveTag
 } from "../functions/objects.ts";
 import type {GameListFilterDTO} from "../models/gameList.ts";
+import {useTranslation} from "react-i18next";
 
 export function useQueryAgeRatings() {
     const queryClient = useQueryClient();
@@ -322,9 +323,20 @@ export function useQueryPlatforms() {
 
 export function useQueryPlatformSpecifications() {
     const queryClient = useQueryClient();
+    const {t, i18n} = useTranslation();
     return useQuery({
-        queryKey: PLATFORM_SPECIFICATION_QUERY_KEY,
-        queryFn: () => fetchPlatformSpecifications(queryClient)
+        queryKey: [...PLATFORM_SPECIFICATION_QUERY_KEY, i18n.language],
+        queryFn: () => fetchPlatformSpecifications(queryClient),
+        select: (data) => {
+            const result = data.map((item) => {
+                return {
+                    id: item.id,
+                    name: t(`enums.PlatformSpecification.${item.id}`, {defaultValue: item.name}),
+                }
+            });
+            result.sort((a, b) => a.name.localeCompare(b.name));
+            return result
+        }
     })
 }
 
@@ -358,9 +370,20 @@ export function useQueryRegions() {
 
 export function useQueryRegionSpecifications() {
     const queryClient = useQueryClient();
+    const {t, i18n} = useTranslation();
     return useQuery({
-        queryKey: REGION_SPECIFICATION_QUERY_KEY,
-        queryFn: () => fetchRegionSpecifications(queryClient)
+        queryKey: [...REGION_SPECIFICATION_QUERY_KEY, i18n.language],
+        queryFn: () => fetchRegionSpecifications(queryClient),
+        select: (data) => {
+            const result = data.map((item) => {
+                return {
+                    id: item.id,
+                    name: t(`enums.RegionSpecification.${item.id}`, {defaultValue: item.name}),
+                }
+            });
+            result.sort((a, b) => a.name.localeCompare(b.name));
+            return result
+        }
     })
 }
 

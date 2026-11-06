@@ -1,4 +1,5 @@
 import {Button, DialogActions, DialogContent, DialogContentText} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 export function DeleteLibraryObjectDialog({
                                               close,
@@ -11,18 +12,19 @@ export function DeleteLibraryObjectDialog({
     disabledButtons: boolean;
     onDelete: () => Promise<void>;
 }>) {
+    const {t} = useTranslation();
     return (<>
-        <DialogContent>
+        <DialogContent sx={{minWidth: '360px'}}>
             <DialogContentText>
-                Are you sure you want to delete the selected object: "{objectName}"?
+                {t("library.delete.confirmation", {objectName})}
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={close} autoFocus sx={{color: 'text.primary'}}>Cancel</Button>
+            <Button onClick={close} autoFocus sx={{color: 'text.primary'}}>{t("common.cancel")}</Button>
             <Button variant="contained" color="error" onClick={async () => {
                 await onDelete()
                 close()
-            }} disabled={disabledButtons}>Delete</Button>
+            }} disabled={disabledButtons}>{t("common.delete")}</Button>
         </DialogActions>
     </>)
 }

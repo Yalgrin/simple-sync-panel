@@ -36,9 +36,11 @@ import {GroupingFieldSelect} from "./inputs/GroupingFieldSelect.tsx";
 import {FilterPresetSelect} from "./inputs/FilterPresetSelect.tsx";
 import {SortOrderSelect} from "./inputs/SortOrderSelect.tsx";
 import {SortOrderDirectionSelect} from "./inputs/SortOrderDirectionSelect.tsx";
+import {useTranslation} from "react-i18next";
 
 //TODO add ability to save filter presets
 export function FiltersPane() {
+    const {t} = useTranslation();
     const filterActions = useFilterStore((state) => state.actions);
 
     const clearFilters = useCallback(() => {
@@ -65,7 +67,7 @@ export function FiltersPane() {
                 }}
             >
                 <Typography variant="h6" sx={{fontWeight: 700}}>
-                    Filters
+                    {t("filters.title")}
                 </Typography>
 
                 <Button
@@ -74,7 +76,7 @@ export function FiltersPane() {
                     sx={{color: 'grey.300'}}
                     onClick={clearFilters}
                 >
-                    Clear
+                    {t("common.clear")}
                 </Button>
             </Stack>
 
