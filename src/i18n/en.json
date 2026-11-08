@@ -17,6 +17,7 @@
     "none": "(None)",
     "rename": "Rename",
     "reset": "Reset",
+      "save": "Save",
     "searchPlaceholder": "Search..."
   },
   "changePassword": {
@@ -44,6 +45,9 @@
   },
   "filters": {
     "title": "Filters",
+      "saveFilterPreset": "Save filter preset",
+      "savePresetError": "Error occurred while saving filter preset!",
+      "saveGroupingAndOrdering": "Save grouping and sorting settings",
     "controls": {
       "dateAdded": "Date added",
       "ageRating": "Age rating",
@@ -496,6 +500,10 @@
       "completion-status": "Completion statuses",
       "filter-preset": "Filter presets",
       "library-plugin": "Library plugins"
+    },
+      "InstallationStatus": {
+          "true": "Installed",
+          "false": "Not installed"
     }
   }
 }

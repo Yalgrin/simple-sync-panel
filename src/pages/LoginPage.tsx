@@ -17,6 +17,23 @@ import {Navigate, useLocation, useNavigate} from "react-router";
 import {useSnackbar} from "notistack";
 import {useTranslation} from "react-i18next";
 
+function getLoginDestination(redirect: string | null): string {
+    if (!redirect?.startsWith("/") || redirect.includes("\\")) {
+        return "/";
+    }
+
+    try {
+        const url = new URL(redirect, window.location.origin);
+        if (url.origin !== window.location.origin) {
+            return "/";
+        }
+
+        return `${url.pathname}${url.search}${url.hash}`;
+    } catch {
+        return "/";
+    }
+}
+
 export function LoginPage() {
     const [loginError, setLoginError] = useState(false);
     const [loginErrorMessage, setLoginErrorMessage] = useState('');
@@ -34,10 +51,7 @@ export function LoginPage() {
 
     const params = new URLSearchParams(search);
     const redirect = params.get("redirect");
-    const destination =
-        redirect?.startsWith("/") && !redirect.startsWith("//")
-            ? redirect
-            : "/";
+    const destination = getLoginDestination(redirect);
 
     if (!isLoading && currentUser) {
         return <Navigate to={destination} replace/>;

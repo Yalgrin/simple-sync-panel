@@ -1,4 +1,3 @@
-//TODO reconsider locales
 const supportedLocales = {
     "en-us": {
         dayjs: "en",
@@ -28,6 +27,30 @@ const supportedLocales = {
         dayjs: "es-mx",
         loadDayjs: () => import("dayjs/locale/es-mx")
     },
+    "es-us": {
+        dayjs: "es-us",
+        loadDayjs: () => import("dayjs/locale/es-us")
+    },
+    "de-at": {
+        dayjs: "de-at",
+        loadDayjs: () => import("dayjs/locale/de-at")
+    },
+    "de-ch": {
+        dayjs: "de-ch",
+        loadDayjs: () => import("dayjs/locale/de-ch")
+    },
+    "fr-ca": {
+        dayjs: "fr-ca",
+        loadDayjs: () => import("dayjs/locale/fr-ca")
+    },
+    "fr-ch": {
+        dayjs: "fr-ch",
+        loadDayjs: () => import("dayjs/locale/fr-ch")
+    },
+    "nl-be": {
+        dayjs: "nl-be",
+        loadDayjs: () => import("dayjs/locale/nl-be")
+    },
     en: {
         dayjs: "en",
         loadDayjs: () => import("dayjs/locale/en")
@@ -52,6 +75,10 @@ const supportedLocales = {
         dayjs: "pt",
         loadDayjs: () => import("dayjs/locale/pt")
     },
+    nl: {
+        dayjs: "nl",
+        loadDayjs: () => import("dayjs/locale/nl")
+    },
     hu: {
         dayjs: "hu",
         loadDayjs: () => import("dayjs/locale/hu")
@@ -67,6 +94,22 @@ const supportedLocales = {
     ja: {
         dayjs: "ja",
         loadDayjs: () => import("dayjs/locale/ja")
+    },
+    ko: {
+        dayjs: "ko",
+        loadDayjs: () => import("dayjs/locale/ko")
+    },
+    zh: {
+        dayjs: "zh",
+        loadDayjs: () => import("dayjs/locale/zh")
+    },
+    hi: {
+        dayjs: "hi",
+        loadDayjs: () => import("dayjs/locale/hi")
+    },
+    ar: {
+        dayjs: "ar",
+        loadDayjs: () => import("dayjs/locale/ar")
     },
 } as const;
 

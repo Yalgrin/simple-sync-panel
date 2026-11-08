@@ -30,6 +30,7 @@ import {
     getPastTimeSegmentCode,
     getPlaytimeCategoryCode,
     getScoreGroupCode,
+    translateInstalledName,
     translateInstallSizeName,
     translatePastTimeSegmentName,
     translatePlaytimeCategoryName,
@@ -56,6 +57,9 @@ const translateName = function (t: TFunction<"translation", undefined>, name: st
     }
     if (groupingOrder && groupingOrder == 'PlayTime') {
         return translatePlaytimeCategoryName(t, getPlaytimeCategoryCode(name));
+    }
+    if (groupingOrder && groupingOrder == 'InstallationStatus') {
+        return translateInstalledName(t, name);
     }
     return name || '(None)';
 };
@@ -317,7 +321,7 @@ function GameList() {
 
             {!!(rowData.rows.length) &&
                 (<List
-                    style={{height: '100%', minHeight: 0, flex: 1}}
+                        style={{minHeight: 0, flex: 1}}
                     rowComponent={GameRow}
                     rowCount={rowData.rows.length}
                     rowHeight={getRowHeight}
@@ -387,7 +391,7 @@ export function GameListPane() {
 
             <Divider/>
 
-            <Box sx={{marginTop: "8px", flex: 1, minHeight: 0}}>
+            <Box sx={{marginTop: "8px", flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column'}}>
                 <GameList/>
             </Box>
             <AddGameButton/>

@@ -1,16 +1,21 @@
 import {Button, DialogActions, DialogContent, DialogContentText} from "@mui/material";
 import {useLogout} from "../../hooks/auth.ts";
 import {useTranslation} from "react-i18next";
+import {useNavigate} from "react-router";
 
 export function LogoutDialog({close}: Readonly<{
     close: () => void;
 }>) {
     const {t} = useTranslation();
     const logoutMutation = useLogout();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         logoutMutation.mutate(undefined, {
-            onSuccess: () => close()
+            onSuccess: async () => {
+                close()
+                await navigate("/");
+            }
         });
     };
 

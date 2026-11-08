@@ -18,7 +18,6 @@ import {LibraryListPane} from "./components/library/LibraryListPane.tsx";
 import {RootErrorPage} from "./pages/RootErrorPage.tsx";
 import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 
-//TODO localization
 //TODO error handling, 404 etc
 //TODO better error and loading handling in each view
 const router = createBrowserRouter([

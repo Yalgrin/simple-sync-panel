@@ -15,6 +15,7 @@ import {DeleteGameDialog} from "../dialogs/DeleteGameDialog.tsx";
 import type {PanelGameDTO} from "../../models/objects.ts";
 import {OptionalImage} from "../common/OptionalImage.tsx";
 import {useTranslation} from "react-i18next";
+import {RootErrorPage} from "../../pages/RootErrorPage.tsx";
 
 interface StatCardProps {
     visible: boolean;
@@ -30,7 +31,6 @@ function StatCard({visible, label, value}: Readonly<StatCardProps>) {
     return (
         <Card variant="outlined" sx={{
             p: '12px',
-            //TODO color
             flexGrow: 1,
         }}>
             <Typography variant="caption" sx={{color: "text.secondary"}}>
@@ -108,7 +108,7 @@ export function GameDetailsPane() {
         });
     };
 
-    if (isLoading || (gameId !== undefined && !error && !isCurrentGame)) {
+    if (isLoading || (id && gameId !== undefined && !error && !isCurrentGame)) {
         return (
             <Box
                 sx={{
@@ -124,11 +124,14 @@ export function GameDetailsPane() {
         )
     }
 
-    if (!gameDetails || error) {
+    if (error) {
+        return <RootErrorPage/>;
+    }
+
+    if (!gameDetails || !gameId) {
         return null;
     }
 
-    //TODO border
     return (
         <Box
             sx={{
@@ -180,6 +183,7 @@ export function GameDetailsPane() {
                                 textShadow: '-1px -1px 4px black, -1px 1px 4px black, 1px -1px 4px black, 1px 1px 4px black',
                                 minWidth: 0,
                                 mb: 1.5,
+                                wordBreak: 'break-word',
                             }}
                         >
                             {gameDetails?.name}

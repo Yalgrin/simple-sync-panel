@@ -7,7 +7,6 @@ export function getScoreGroupCode(name: string | undefined): string {
     return 'O' + name + 'X';
 }
 
-//TODO actual translations
 export function translateScoreGroupName(t: TFunction<"translation", undefined>, code: string | undefined) {
     return t(`enums.ScoreGroup.${code ?? 'NONE'}`, {
         defaultValue: code
@@ -100,6 +99,12 @@ export function getPlaytimeCategoryCode(name: string | undefined): string {
 
 export function translatePlaytimeCategoryName(t: TFunction<"translation", undefined>, code: string | undefined) {
     return t(`enums.PlaytimeCategory.${code ?? 'NOT_PLAYED'}`, {
+        defaultValue: code
+    });
+}
+
+export function translateInstalledName(t: TFunction<"translation", undefined>, code: string | undefined) {
+    return t(`enums.InstallationStatus.${code ?? 'false'}`, {
         defaultValue: code
     });
 }

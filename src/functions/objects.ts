@@ -119,7 +119,7 @@ export async function fetchFilterPresets(queryClient: QueryClient): Promise<Pane
     })).json();
 }
 
-export async function saveFilterPreset(queryClient: QueryClient, dto: PanelFilterPresetDTO): Promise<PanelFeatureDTO> {
+export async function saveFilterPreset(queryClient: QueryClient, dto: PanelFilterPresetDTO): Promise<PanelFilterPresetDTO> {
     return (await performPostJsonRequest(queryClient, "/api/panel/filter-preset/save", {
         body: JSON.stringify(dto)
     })).json();
@@ -200,7 +200,7 @@ export async function fetchPlatformSpecifications(queryClient: QueryClient): Pro
     return specifications;
 }
 
-export async function savePlatform(queryClient: QueryClient, dto: PanelPlatformToSaveDTO): Promise<PanelGameDTO> {
+export async function savePlatform(queryClient: QueryClient, dto: PanelPlatformToSaveDTO): Promise<PanelPlatformDTO> {
     const requestInit: RequestInit = {};
     const formData = new FormData()
     formData.append(

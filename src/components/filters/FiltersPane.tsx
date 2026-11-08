@@ -1,5 +1,6 @@
 import {Box, Button, Divider, Stack, Typography} from "@mui/material";
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import SaveIcon from '@mui/icons-material/Save';
 import {useCallback} from "react";
 import {useFilterStore} from "../../store/useFilterStore.ts";
 import {IsInstalledControl} from "./form-controls/IsInstalledControl.tsx";
@@ -37,11 +38,46 @@ import {FilterPresetSelect} from "./inputs/FilterPresetSelect.tsx";
 import {SortOrderSelect} from "./inputs/SortOrderSelect.tsx";
 import {SortOrderDirectionSelect} from "./inputs/SortOrderDirectionSelect.tsx";
 import {useTranslation} from "react-i18next";
+import {useDialog} from "../../hooks/useDialog.ts";
+import {SaveFilterPresetDialog} from "../dialogs/SaveFilterPresetDialog.tsx";
+import type {PanelFilterPresetDTO} from "../../models/objects.ts";
+import {useSaveFilterPreset} from "../../hooks/objects.ts";
+import {enqueueSnackbar} from "notistack";
 
-//TODO add ability to save filter presets
 export function FiltersPane() {
     const {t} = useTranslation();
     const filterActions = useFilterStore((state) => state.actions);
+    const saveMutation = useSaveFilterPreset();
+
+    const saveFilterPreset = (preset: PanelFilterPresetDTO, close: () => void) => {
+        saveMutation.mutate(preset, {
+            onSuccess: (result) => {
+                if (result.id) {
+                    filterActions.setSelectedFilterPresetId(result.id);
+                }
+                close();
+            },
+            onError: () => enqueueSnackbar(t('filters.savePresetError'), {
+                variant: 'error',
+                anchorOrigin: {vertical: 'bottom', horizontal: 'right'}
+            })
+        });
+    }
+
+    const {openDialog} = useDialog();
+
+    const openAddDialog = () => {
+        openDialog({
+            title: t("filters.saveFilterPreset"),
+            render: ({close}) => {
+                return <SaveFilterPresetDialog
+                        close={close}
+                        callback={(preset) => saveFilterPreset(preset, close)}
+                        disabled={saveMutation.isPending}
+                />;
+            },
+        });
+    }
 
     const clearFilters = useCallback(() => {
         filterActions.clear();
@@ -69,6 +105,17 @@ export function FiltersPane() {
                 <Typography variant="h6" sx={{fontWeight: 700}}>
                     {t("filters.title")}
                 </Typography>
+
+                <Box sx={{flex: 1}}/>
+
+                <Button
+                        size="small"
+                        startIcon={<SaveIcon/>}
+                        sx={{color: 'grey.300'}}
+                        onClick={openAddDialog}
+                >
+                    {t("common.save")}
+                </Button>
 
                 <Button
                     size="small"

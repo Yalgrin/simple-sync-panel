@@ -2,7 +2,7 @@ import type {ReactNode} from "react";
 import {Navigate, Outlet, useLocation, useMatch} from "react-router";
 import {MainLayout} from "./components/layout/MainLayout.tsx";
 import {useCurrentUser} from "./hooks/auth.ts";
-import {useSseSession} from "./hooks/useSseSession.tsx";
+import {useSseSession} from "./hooks/useSseSession.ts";
 import {DialogProvider} from "./components/DialogProvider.tsx";
 import {SnackbarProvider} from "notistack";
 import {RootErrorPage} from "./pages/RootErrorPage.tsx";

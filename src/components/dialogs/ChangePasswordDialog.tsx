@@ -1,8 +1,9 @@
-import {Alert, Box, Button, DialogActions, DialogContent, TextField} from "@mui/material";
+import {Box, Button, DialogActions, DialogContent, TextField} from "@mui/material";
 import * as React from "react";
 import {useState} from "react";
 import {useChangePassword} from "../../hooks/auth.ts";
 import {useTranslation} from "react-i18next";
+import {enqueueSnackbar} from "notistack";
 
 export function ChangePasswordDialog({close}: Readonly<{
     close: () => void;
@@ -61,16 +62,15 @@ export function ChangePasswordDialog({close}: Readonly<{
             newPassword: formData.get('newPassword') as string,
         }, {
             onSuccess: () => close(),
+            onError: () => enqueueSnackbar(t('changePassword.error.changeFailed'), {
+                variant: 'error',
+                anchorOrigin: {vertical: 'bottom', horizontal: 'right'}
+            }),
         });
     };
 
     return (<>
         <DialogContent sx={{minWidth: '360px'}}>
-            {changePasswordMutation.isError && (
-                <Alert severity="error" sx={{marginBottom: '24px'}}>
-                    {t("changePassword.error.changeFailed")}
-                </Alert>
-            )}
             <Box
                 component="form"
                 onSubmit={handleSubmit}

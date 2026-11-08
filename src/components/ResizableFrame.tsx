@@ -24,7 +24,7 @@ export default function ResizableFrame({html}: Readonly<ResizableFrameProps>) {
                 line-height: ${theme.typography.body1.lineHeight};
             }
         </style>
-        <script async src="/js/iframe-resizer-child.js"></script>
+        <script defer src="/js/iframe-resizer-child.js"></script>
         </head>
         <body>${sanitizedHtml ?? ""}</body>
         </html>`;

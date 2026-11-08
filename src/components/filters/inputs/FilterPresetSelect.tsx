@@ -12,6 +12,9 @@ export function FilterPresetSelect() {
 
     const selectedFilterPresetId = useFilterStore((state) => state.selectedFilterPresetId);
     const filterActions = useFilterStore((state) => state.actions);
+    const selectValue = filtersPresets?.some((preset) => preset.id === selectedFilterPresetId)
+            ? selectedFilterPresetId
+            : NOT_SELECTED;
 
     useEffect(() => {
         if (!selectedFilterPresetId) {
@@ -33,7 +36,7 @@ export function FilterPresetSelect() {
                 label={t("filters.controls.filterPreset")}
                 disabled={filterPresetsLoading}
                 fullWidth
-                value={selectedFilterPresetId ?? NOT_SELECTED}
+                value={selectValue}
                 onChange={(event) => filterActions.setSelectedFilterPresetId(event.target.value as number)}
                 size="small">
                 <MenuItem value={NOT_SELECTED}>{t("common.none")}</MenuItem>

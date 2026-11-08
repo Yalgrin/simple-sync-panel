@@ -108,7 +108,7 @@ function GameEditForm({
 
     const [tab, setTab] = useState(0);
 
-    const isDirty = !hasGameNotBeenChanged(initialValues, values) ||
+    const isDirty = !editMode || !hasGameNotBeenChanged(initialValues, values) ||
         iconFile !== null || coverImageFile !== null || backgroundImageFile !== null;
 
     useEffect(() => {
@@ -260,17 +260,35 @@ function GameAddPane() {
         name: t("game.add.defaultName")
     };
 
-    const {data: series} = useQuerySeries();
-    const {data: platforms} = useQueryPlatforms();
-    const {data: ageRatings} = useQueryAgeRatings();
-    const {data: genres} = useQueryGenres();
-    const {data: regions} = useQueryRegions();
-    const {data: companies} = useQueryCompanies();
-    const {data: sources} = useQuerySources();
-    const {data: completionStatuses} = useQueryCompletionStatuses();
-    const {data: categories} = useQueryCategories();
-    const {data: features} = useQueryFeatures();
-    const {data: tags} = useQueryTags();
+    const {data: series, isLoading: seriesLoading} = useQuerySeries();
+    const {data: platforms, isLoading: platformsLoading} = useQueryPlatforms();
+    const {data: ageRatings, isLoading: ageRatingsLoading} = useQueryAgeRatings();
+    const {data: genres, isLoading: genresLoading} = useQueryGenres();
+    const {data: regions, isLoading: regionsLoading} = useQueryRegions();
+    const {data: companies, isLoading: companiesLoading} = useQueryCompanies();
+    const {data: sources, isLoading: sourcesLoading} = useQuerySources();
+    const {data: completionStatuses, isLoading: completionStatusesLoading} = useQueryCompletionStatuses();
+    const {data: categories, isLoading: categoriesLoading} = useQueryCategories();
+    const {data: features, isLoading: featuresLoading} = useQueryFeatures();
+    const {data: tags, isLoading: tagsLoading} = useQueryTags();
+
+    const anythingLoading = seriesLoading || platformsLoading || ageRatingsLoading || genresLoading || regionsLoading || companiesLoading || sourcesLoading || completionStatusesLoading || categoriesLoading || featuresLoading || tagsLoading;
+
+    if (anythingLoading) {
+        return (
+                <Box
+                        sx={{
+                            height: '100%',
+                            overflowY: 'auto',
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                >
+                    <CircularProgress enableTrackSlot size="10vh" aria-label={t("common.loading")}/>
+                </Box>
+        )
+    }
 
     return <GameEditForm key="new"
                          editMode={false}

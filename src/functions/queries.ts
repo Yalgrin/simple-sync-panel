@@ -67,7 +67,10 @@ export async function doFetch(
         throw new AuthError("Auth error occurred!");
     }
     if (response.status === 403) {
-        throw new CsrfError("CSRF token invalid!");
+        if (response.headers.get("X-CSRF-Error") === "true") {
+            throw new CsrfError("CSRF token invalid!");
+        }
+        throw new Error("Access denied!");
     }
     if (!response.ok) {
         throw new Error("Unexpected error occurred!");
